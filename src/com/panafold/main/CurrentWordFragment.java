@@ -1,22 +1,20 @@
 package com.panafold.main;
 
 import java.io.IOException;
-import java.text.DateFormat;
-import java.text.Format;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import com.panafold.R;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.text.format.Time;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import com.panafold.R;
 
 public class CurrentWordFragment extends Fragment {
 
@@ -30,6 +28,10 @@ public class CurrentWordFragment extends Fragment {
 	@Override
     public void onActivityCreated(Bundle savedInstanceState) {       
         super.onActivityCreated(savedInstanceState);
+        
+        //set english text
+        TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
+		text.setText(CurrentWord.currentEnglishWord);
         
         //translate current word into japanese
         new TranslateNow().execute(CurrentWord.currentEnglishWord);
@@ -83,10 +85,7 @@ public class CurrentWordFragment extends Fragment {
 			}
 		}
 		protected void onPostExecute(String result) {
-			//set both the english and japenese text
-			TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
-			text.setText(CurrentWord.currentEnglishWord);
-			
+			//set thejapenese text
 			TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
 			text2.setText(CurrentWord.currentJapeneseWord);
 			

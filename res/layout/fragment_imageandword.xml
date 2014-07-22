@@ -50,9 +50,10 @@
         <ImageView
             android:id="@+id/weatherImageView"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_below="@+id/japaneseTextView"
-            android:layout_centerHorizontal="true" />
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/line" />
 
         <TextView
             android:id="@+id/weatherTextView"
@@ -61,7 +62,7 @@
             android:layout_centerVertical="true"
             android:layout_toRightOf="@+id/weatherImageView"
             android:layout_marginRight="18dip"
-            android:text="TextView"
+            android:text=""
             android:textColor="#F5F5F5"
             android:textSize="20sp"  />
 

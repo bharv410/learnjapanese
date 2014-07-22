@@ -1,12 +1,10 @@
 package com.panafold.main;
 
-import java.util.Date;
 import java.util.Locale;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
-
 import android.location.Location;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -16,9 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 import at.theengine.android.bestlocation.BestLocationListener;
 import at.theengine.android.bestlocation.BestLocationProvider;
 import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
@@ -47,7 +43,6 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 
 		//setup text to speech engine
 		tts = new TextToSpeech(this, this);
-		
 		
 		//first word is strawberry. otherwise it is already chose by the user
 		if(CurrentWord.currentEnglishWord==null){
