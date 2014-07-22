@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#575757"
+    android:orientation="vertical" >
+
+    <RelativeLayout
+        android:id="@+id/relativeLayout1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/blankTextView"
+        android:background="#A8A8A8" >
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="18dip"
+            android:text="Date"
+            android:textColor="#F5F5F5"
+            android:textSize="40sp" />
+
+        <Button
+            android:id="@+id/button1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:background="@drawable/soundicon"
+            android:onClick="speakOut" />
+
+        <TextView
+            android:id="@+id/japaneseTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/dateTextView"
+            android:layout_centerHorizontal="true"
+            android:text="japanese word"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#F5F5F5"
+            android:textSize="40dp"
+            android:visibility="invisible" />
+
+        <ImageView
+            android:id="@+id/weatherImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/japaneseTextView"
+            android:layout_centerHorizontal="true" />
+
+        <TextView
+            android:id="@+id/weatherTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_toRightOf="@+id/weatherImageView"
+            android:layout_marginRight="18dip"
+            android:text="TextView"
+            android:textColor="#F5F5F5"
+            android:textSize="20sp"  />
+
+    </RelativeLayout>
+
+    <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/blankTextView"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/englishTextView"
+        android:src="@drawable/ic_launcher" />
+
+    <TextView
+        android:id="@+id/englishTextView"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:gravity="center"
+        android:text="English Text"
+        android:textColor="#F5F5F5"
+        android:textSize="40sp" />
+
+    <TextView
+        android:id="@+id/blankTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text=""
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:textColor="#F5F5F5"
+        android:textSize="40dp"
+        android:visibility="invisible" />
+
+</RelativeLayout>
