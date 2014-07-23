@@ -38,7 +38,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);		
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -88,7 +88,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	        if (status == TextToSpeech.SUCCESS) {
 	 
 	            int result = tts.setLanguage(Locale.JAPANESE);
-	 
+	            tts.setSpeechRate((float) 0.2);
 	            if (result == TextToSpeech.LANG_MISSING_DATA
 	                    || result == TextToSpeech.LANG_NOT_SUPPORTED) {
 	                Log.e("TTS", "This Language is not supported");
