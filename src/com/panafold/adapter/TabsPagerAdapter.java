@@ -19,11 +19,11 @@ public class TabsPagerAdapter extends FragmentPagerAdapter {
 
 		switch (index) {
 		case 0:
-			return new CurrentWordFragment();
-		case 1:
-			return new WebsiteFragment();
-		case 2:
 			return new ChangeWordFragment();
+		case 1:
+			return new CurrentWordFragment();
+		case 2:
+			return new WebsiteFragment();
 		}
 
 		return null;

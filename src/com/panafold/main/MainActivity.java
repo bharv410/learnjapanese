@@ -5,6 +5,7 @@ import java.util.Locale;
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
@@ -31,6 +32,8 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
+	
+	public static Typeface gothamFont,neutrafaceFont;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -40,15 +43,20 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
-
+		viewPager.setCurrentItem(1);
+		
 		//setup text to speech engine
 		tts = new TextToSpeech(this, this);
 		
 		//first word is strawberry. otherwise it is already chose by the user
 		if(CurrentWord.currentEnglishWord==null){
-			CurrentWord.currentEnglishWord="strawberry";
+			CurrentWord.currentEnglishWord="cellphone";
 			
 		}
+		
+		//add custom fonts
+		gothamFont = Typeface.createFromAsset(getAssets(), "fonts/Gotham-Book.ttf");
+		neutrafaceFont= Typeface.createFromAsset(getAssets(), "fonts/NeutraText-Bold.otf");
 	}
 	
 	@Override
@@ -142,13 +150,20 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	        	
 	        	
 	        	//set weather information on screen
-	        	mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);
-	        	if (weatherInfo.getCurrentConditionIcon() != null) {
-	        		mIvWeather0.setImageBitmap(weatherInfo.getCurrentConditionIcon());
-				}
+//	        	mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);
+//	        	if (weatherInfo.getCurrentConditionIcon() != null) {
+//	        		mIvWeather0.setImageBitmap(weatherInfo.getCurrentConditionIcon());
+//				}
+	        	
+	        	//exception thrown when user exits app but weather info is updated
+	        	try{
 	        	TextView weatherTextView =(TextView)findViewById(R.id.weatherTextView);
+	        	weatherTextView.setTypeface(gothamFont);
 	        	weatherTextView.setText(weatherInfo.getCurrentText() + "\n" +
 				           weatherInfo.getCurrentTempF() + " degrees");
+	        	}catch(Exception e){
+	        		System.out.println("Exited app");
+	        	}
 	        }
 	    }
 	}

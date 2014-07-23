@@ -2,18 +2,17 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#575757"
+    android:background="#CD7552"
     android:orientation="vertical" >
 
     <RelativeLayout
         android:id="@+id/relativeLayout1"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:layout_below="@+id/blankTextView"
-        android:background="#A8A8A8" >
+        android:background="#F8EFCB" >
 
         <TextView
             android:id="@+id/dateTextView"
@@ -21,50 +20,50 @@
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerVertical="true"
-            android:layout_marginLeft="18dip"
+            android:layout_marginLeft="38dip"
             android:text="Date"
-            android:textColor="#F5F5F5"
+            android:textColor="#6D6E70"
             android:textSize="40sp" />
-
-        <Button
-            android:id="@+id/button1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:background="@drawable/soundicon"
-            android:onClick="speakOut" />
 
         <TextView
             android:id="@+id/japaneseTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/dateTextView"
+            android:layout_alignBottom="@+id/dateTextView"
             android:layout_centerHorizontal="true"
             android:text="japanese word"
             android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#F5F5F5"
+            android:textColor="#6D6E70"
             android:textSize="40dp"
             android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/weatherImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:layout_below="@+id/japaneseTextView"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/line" />
 
         <TextView
             android:id="@+id/weatherTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_toRightOf="@+id/weatherImageView"
-            android:layout_marginRight="18dip"
-            android:text=""
-            android:textColor="#F5F5F5"
-            android:textSize="20sp"  />
+            android:layout_below="@+id/imageView2"
+            android:layout_toRightOf="@+id/lineImageView"
+            android:textColor="#6D6E70"
+            android:textSize="24sp"
+            android:layout_marginLeft="20dp" />
+
+        <ImageView
+            android:id="@+id/lineImageView"
+            android:layout_width="wrap_content"
+            android:layout_height="120dp"
+            android:layout_alignParentTop="true"
+            android:layout_marginTop="32dp"
+            android:layout_centerHorizontal="true"
+            android:src="@drawable/line" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/japaneseTextView"
+            android:layout_marginBottom="2dp"
+            android:layout_toRightOf="@+id/lineImageView"
+            android:src="@drawable/weathericon" />
 
     </RelativeLayout>
 
@@ -72,22 +71,22 @@
         android:id="@+id/imageView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/blankTextView"
+        android:layout_above="@+id/button1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
         android:layout_below="@+id/englishTextView"
-        android:src="@drawable/ic_launcher" />
+        android:src="@drawable/cellphone" />
 
     <TextView
         android:id="@+id/englishTextView"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="100dp"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:gravity="center"
         android:text="English Text"
-        android:textColor="#F5F5F5"
-        android:textSize="40sp" />
+        android:textColor="#F8EFCB"
+        android:textSize="30sp" />
 
     <TextView
         android:id="@+id/blankTextView"
@@ -97,8 +96,17 @@
         android:layout_centerVertical="true"
         android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"
-        android:textColor="#F5F5F5"
+        android:textColor="#6D6E70"
         android:textSize="40dp"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/relativeLayout1"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/soundicon"
+        android:onClick="speakOut" />
 
 </RelativeLayout>
