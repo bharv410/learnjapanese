@@ -22,11 +22,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TABLE_WORDS = "words";
  
     // Contacts Table Columns names for english,romaji,hirigana,kanji,phrase
+    private static final String KEY_ID = "id";
     private static final String KEY_ENGLISH = "english";
     private static final String KEY_ROMAJI = "romaji";
     private static final String KEY_HIRIGANA = "hirigana";
     private static final String KEY_KANJI = "kanji";
-    private static final String KEY_PHRASE = "phrase";
+    private static final String KEY_ENGPHRASE = "engphrase";
+    private static final String KEY_JAPPHRASE = "japphrase";
     private static final String KEY_URL = "imageurl";
  
     public DatabaseHandler(Context context) {
@@ -39,7 +41,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         String CREATE_WORDS_TABLE = "CREATE TABLE " + TABLE_WORDS + "("
                 + KEY_ENGLISH + " TEXT PRIMARY KEY," + KEY_ROMAJI + " TEXT,"
                 + KEY_HIRIGANA + " TEXT,"+ KEY_KANJI + " TEXT,"
-                + KEY_PHRASE + " TEXT,"
+                + KEY_ENGPHRASE + " TEXT,"+ KEY_JAPPHRASE + " TEXT,"
                 + KEY_URL + " TEXT" + ")";
         db.execSQL(CREATE_WORDS_TABLE);
     }
@@ -59,7 +61,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
      */
  
     // Adding new contact
-    void addContact(Word curWord) {
+    public void addWord(Word curWord) {
         SQLiteDatabase db = this.getWritableDatabase();
  
         ContentValues values = new ContentValues();
@@ -67,7 +69,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         values.put(KEY_ROMAJI, curWord.getRomaji());
         values.put(KEY_HIRIGANA, curWord.getHirigana());
         values.put(KEY_KANJI, curWord.getKanji());
-        values.put(KEY_PHRASE, curWord.getPhrase());
+        values.put(KEY_JAPPHRASE, curWord.getJapPhrase());
+        values.put(KEY_ENGPHRASE, curWord.getEnglPhrase());
         values.put(KEY_URL, curWord.getUrl());
         
         // Inserting Row
@@ -75,18 +78,17 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         db.close(); // Closing database connection
     }
  
-    // Getting single contact
+    // Getting single word
     Word getWord(String eng) {
         SQLiteDatabase db = this.getReadableDatabase();
  
         Cursor cursor = db.query(TABLE_WORDS, new String[] { KEY_ENGLISH,
-        		KEY_ROMAJI, KEY_HIRIGANA,KEY_KANJI, KEY_PHRASE,KEY_URL}, KEY_ENGLISH + "=?",
+        		KEY_ROMAJI, KEY_HIRIGANA,KEY_KANJI, KEY_JAPPHRASE,KEY_ENGPHRASE,KEY_URL}, KEY_ENGLISH + "=?",
                 new String[] { String.valueOf(eng) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
- 
-        Word curWord = new Word(cursor.getString(0),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+        Word curWord = new Word(cursor.getInt(0),
+                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
         // return contact
         return curWord;
     }
@@ -103,8 +105,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-            	Word curWord = new Word(cursor.getString(0),
-                        cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5));
+            	Word curWord = new Word(cursor.getInt(0),
+                        cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
                 // Adding contact to list
             	wordList.add(curWord);
             } while (cursor.moveToNext());

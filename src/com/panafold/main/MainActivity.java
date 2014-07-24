@@ -1,5 +1,7 @@
 package com.panafold.main;
 
+import java.io.IOException;
+import java.util.List;
 import java.util.Locale;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
@@ -15,6 +17,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import at.theengine.android.bestlocation.BestLocationListener;
 import at.theengine.android.bestlocation.BestLocationProvider;
@@ -22,6 +25,9 @@ import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
 import com.panafold.R;
 import com.panafold.adapter.TabsPagerAdapter;
+import com.panafold.main.datamodel.DatabaseHandler;
+import com.panafold.main.datamodel.SqlLiteDbHelper;
+import com.panafold.main.datamodel.Word;
 
 public class MainActivity extends FragmentActivity implements TextToSpeech.OnInitListener, YahooWeatherInfoListener{
 	private TextToSpeech tts;
@@ -57,6 +63,21 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 		//add custom fonts
 		gothamFont = Typeface.createFromAsset(getAssets(), "fonts/Gotham-Book.ttf");
 		neutrafaceFont= Typeface.createFromAsset(getAssets(), "fonts/NeutraText-Bold.otf");
+		
+	
+		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
+		try {
+			dbhelper.CopyDataBaseFromAsset();
+			dbhelper.openDataBase();
+			List<Word> allWords = dbhelper.getAllWords();
+			for(Word w: allWords){
+				System.out.println(w.getEnglish()+", "+w.getKanji());
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
 	}
 	
 	@Override
@@ -148,7 +169,8 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	        	//turn off location updates because they are no longer needed.
 	        	mBestLocationProvider.stopLocationUpdates();
 	        	
-	        	
+	        	ProgressBar weatherPB=(ProgressBar)findViewById(R.id.weatherProgressBar);
+	            weatherPB.setVisibility(ProgressBar.GONE);
 	        	//set weather information on screen
 //	        	mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);
 //	        	if (weatherInfo.getCurrentConditionIcon() != null) {

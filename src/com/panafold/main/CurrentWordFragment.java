@@ -12,13 +12,15 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.panafold.R;
 
 public class CurrentWordFragment extends Fragment {
-
+	ProgressBar weatherPB;
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
@@ -38,6 +40,9 @@ public class CurrentWordFragment extends Fragment {
         //translate current word into japanese
         new TranslateNow().execute(CurrentWord.currentEnglishWord);
         
+        //initialize progress bar
+        weatherPB=(ProgressBar)getActivity().findViewById(R.id.weatherProgressBar);
+        weatherPB.setVisibility(ProgressBar.VISIBLE);
         
         //set current date and time 
         Calendar cal=Calendar.getInstance();
