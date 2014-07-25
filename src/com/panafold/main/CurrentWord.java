@@ -7,10 +7,11 @@ import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
 
-public class CurrentWord {
-	public static String currentEnglishWord;
-	public static String currentJapeneseWord;
+import com.panafold.main.datamodel.Word;
 
+public class CurrentWord {
+public static Word theCurrentWord;
+	
 	public static String translate(String text) throws IOException {
 		// fetch
 		URL url = new URL(

@@ -23,7 +23,7 @@ public class WebsiteFragment extends Fragment {
 	            Bundle savedInstanceState) {
 	        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
 	        
-	        currentURL="https://www.google.com/search?q="+CurrentWord.currentEnglishWord;
+	        currentURL="https://www.google.com/search?q="+CurrentWord.theCurrentWord.getEnglish();
 	        if (currentURL != null) {
 	            WebView wv = (WebView) rootView.findViewById(R.id.webView1);
 	            wv.getSettings().setJavaScriptEnabled(true);

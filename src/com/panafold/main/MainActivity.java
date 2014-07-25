@@ -44,6 +44,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	private BestLocationListener mBestLocationListener;
 	DatabaseHandler dh;
 	public static Typeface gothamFont,neutrafaceFont;
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,11 +59,6 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 		//setup text to speech engine
 		tts = new TextToSpeech(this, this);
 		
-		//first word is strawberry. otherwise it is already chose by the user
-		if(CurrentWord.currentEnglishWord==null){
-			CurrentWord.currentEnglishWord="cellphone";
-			
-		}
 		
 		//add custom fonts
 		gothamFont = Typeface.createFromAsset(getAssets(), "fonts/Gotham-Book.ttf");
@@ -74,7 +70,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 			dbhelper.CopyDataBaseFromAsset();
 			dbhelper.openDataBase();
 			List<Word> allWords = dbhelper.getAllWords();
-			for(Word w: allWords){
+			//for(Word w: allWords){
 				
 				
 				//send some to reviewmenu review section. 9 days after timestamp of seen
@@ -100,11 +96,11 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 				//if reviewTheseWords.contains(w.getEngligh)
 				//
 				
-				
+				CurrentWord.theCurrentWord=allWords.get(1);
 				 
 				//dh.addWord(w);
 				
-			}
+			//}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}

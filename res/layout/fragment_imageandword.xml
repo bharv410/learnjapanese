@@ -73,6 +73,18 @@
             android:layout_alignRight="@+id/japaneseTextView"
             android:layout_alignTop="@+id/japaneseTextView" />
 
+        <TextView
+            android:id="@+id/romajiOrHiriganaTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignBottom="@+id/imageView2"
+            android:layout_alignLeft="@+id/japaneseTextView"
+            android:layout_alignRight="@+id/japaneseTextView"
+            android:text="" 
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#6D6E70"
+            android:textSize="40dp"/>
+
     </RelativeLayout>
 
     <ImageView

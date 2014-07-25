@@ -61,7 +61,7 @@ public class ChangeWordFragment extends ListFragment {
 		  public void onListItemClick(ListView l, View v, int position, long id) {
 			  
 			  final String text = ((TextView)v).getText().toString();
-			  CurrentWord.currentEnglishWord=text;
+			  //CurrentWord.currentEnglishWord=text;
 			  Intent i = new Intent(getActivity(),MainActivity.class);
 			  startActivity(i);
 			  

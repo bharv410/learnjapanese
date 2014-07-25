@@ -35,10 +35,11 @@ public class CurrentWordFragment extends Fragment {
         //set english text
         TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
         text.setTypeface(MainActivity.neutrafaceFont);
-		text.setText(CurrentWord.currentEnglishWord);
+		text.setText(CurrentWord.theCurrentWord.getEnglish());
         
-        //translate current word into japanese
-        new TranslateNow().execute(CurrentWord.currentEnglishWord);
+		//set thejapenese text
+		TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
+		text2.setText(CurrentWord.theCurrentWord.getKanji());
         
         //initialize progress bar
         weatherPB=(ProgressBar)getActivity().findViewById(R.id.weatherProgressBar);
@@ -61,6 +62,10 @@ public class CurrentWordFragment extends Fragment {
             	if(MainActivity.dateShown){
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.VISIBLE);
+    		    	TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
+    		    	romTextView.setVisibility(View.VISIBLE);
+    		    	romTextView.setText(CurrentWord.theCurrentWord.getRomaji());
+    		    	
     		    	//show japanese and hide weather and date and line
     		    	TextView dateView = (TextView)getActivity().findViewById(R.id.dateTextView);
     		    	dateView.setVisibility(View.INVISIBLE);
@@ -74,6 +79,8 @@ public class CurrentWordFragment extends Fragment {
     	    	}else{
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.INVISIBLE);
+    		    	TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
+    		    	romTextView.setVisibility(View.INVISIBLE);
     		    	//hide japanese and show weather and date and line
     		    	TextView dateView = (TextView)getActivity().findViewById(R.id.dateTextView);
     		    	dateView.setVisibility(View.VISIBLE);
@@ -89,22 +96,4 @@ public class CurrentWordFragment extends Fragment {
         });
         
     }
-	private class TranslateNow extends AsyncTask<String, Integer, String> {
-		protected String doInBackground(String... word) {
-			String translateThisWord = word[0];
-			try {
-				//translate current english to japanese
-				CurrentWord.currentJapeneseWord=CurrentWord.translate(translateThisWord);
-				return CurrentWord.currentJapeneseWord;
-			} catch (IOException e) {
-				return null;
-			}
-		}
-		protected void onPostExecute(String result) {
-			//set thejapenese text
-			TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
-			text2.setText(CurrentWord.currentJapeneseWord);
-			
-		}
-	}
 }
