@@ -18,18 +18,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     // Database Name
     private static final String DATABASE_NAME = "wordsManager";
  
-    // Contacts table name
-    private static final String TABLE_WORDS = "words";
+    private static final String TABLE_WORDS = "reviewwords";
  
-    // Contacts Table Columns names for english,romaji,hirigana,kanji,phrase
-    private static final String KEY_ID = "id";
     private static final String KEY_ENGLISH = "english";
-    private static final String KEY_ROMAJI = "romaji";
-    private static final String KEY_HIRIGANA = "hirigana";
-    private static final String KEY_KANJI = "kanji";
-    private static final String KEY_ENGPHRASE = "engphrase";
-    private static final String KEY_JAPPHRASE = "japphrase";
-    private static final String KEY_URL = "imageurl";
+    private static final String KEY_TIMESTAMP = "timestamp";
+    private static final String KEY_REVIEW = "review";
+    
+    
  
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -39,10 +34,9 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         String CREATE_WORDS_TABLE = "CREATE TABLE " + TABLE_WORDS + "("
-                + KEY_ENGLISH + " TEXT PRIMARY KEY," + KEY_ROMAJI + " TEXT,"
-                + KEY_HIRIGANA + " TEXT,"+ KEY_KANJI + " TEXT,"
-                + KEY_ENGPHRASE + " TEXT,"+ KEY_JAPPHRASE + " TEXT,"
-                + KEY_URL + " TEXT" + ")";
+                + KEY_ENGLISH + " TEXT PRIMARY KEY," 
+                + KEY_REVIEW + " INTEGER," 
+                + KEY_TIMESTAMP + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP"+ ")";
         db.execSQL(CREATE_WORDS_TABLE);
     }
  
@@ -66,36 +60,40 @@ public class DatabaseHandler extends SQLiteOpenHelper {
  
         ContentValues values = new ContentValues();
         values.put(KEY_ENGLISH, curWord.getEnglish()); 
-        values.put(KEY_ROMAJI, curWord.getRomaji());
-        values.put(KEY_HIRIGANA, curWord.getHirigana());
-        values.put(KEY_KANJI, curWord.getKanji());
-        values.put(KEY_JAPPHRASE, curWord.getJapPhrase());
-        values.put(KEY_ENGPHRASE, curWord.getEnglPhrase());
-        values.put(KEY_URL, curWord.getUrl());
+        values.put(KEY_REVIEW, 0);
         
         // Inserting Row
         db.insert(TABLE_WORDS, null, values);
-        db.close(); // Closing database connection
+        //db.close(); // Closing database connection
     }
  
     // Getting single word
-    Word getWord(String eng) {
+    ReviewWord getWord(String eng) {
         SQLiteDatabase db = this.getReadableDatabase();
  
         Cursor cursor = db.query(TABLE_WORDS, new String[] { KEY_ENGLISH,
-        		KEY_ROMAJI, KEY_HIRIGANA,KEY_KANJI, KEY_JAPPHRASE,KEY_ENGPHRASE,KEY_URL}, KEY_ENGLISH + "=?",
+        		KEY_REVIEW, KEY_TIMESTAMP}, KEY_ENGLISH + "=?",
                 new String[] { String.valueOf(eng) }, null, null, null, null);
         if (cursor != null)
             cursor.moveToFirst();
-        Word curWord = new Word(cursor.getInt(0),
-                cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
+        ReviewWord curWord = new ReviewWord(cursor.getString(0), cursor.getInt(1), cursor.getString(2));
         // return contact
         return curWord;
     }
      
+    public void setAsSeen(String sameEnglish) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        
+        
+    ContentValues args = new ContentValues();
+    args.put(KEY_REVIEW, 1);
+
+    db.update(TABLE_WORDS, args, KEY_ENGLISH+"="+sameEnglish, null);
+}
+    
     // Getting All Contacts
-    public List<Word> getAllWords() {
-        List<Word> wordList = new ArrayList<Word>();
+    public List<ReviewWord> getReviewWords(Boolean putInReviewSection) {
+        List<ReviewWord> wordList = new ArrayList<ReviewWord>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_WORDS;
  
@@ -105,20 +103,26 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         // looping through all rows and adding to list
         if (cursor.moveToFirst()) {
             do {
-            	Word curWord = new Word(cursor.getInt(0),
-                        cursor.getString(1), cursor.getString(2), cursor.getString(3), cursor.getString(4), cursor.getString(5),cursor.getString(6),cursor.getString(7));
-                // Adding contact to list
-            	wordList.add(curWord);
-            } while (cursor.moveToNext());
+            	ReviewWord curWord = new ReviewWord(cursor.getString(0), cursor.getInt(1), cursor.getString(2));
+            	//if review column was updated to 1 then add to review list
+            	if(putInReviewSection){//if checking for review section words, then check if review column =1
+            		if(curWord.getReview()==1){
+                		wordList.add(curWord);
+                	}
+            	}else{// if NOT checking for review section then check if review column =0
+            		if(curWord.getReview()==0){
+                		wordList.add(curWord);
+                	}
+            	}
+            	} while (cursor.moveToNext());
         }
- 
         // return contact list
         return wordList;
     }
 
  
     // Getting contacts Count
-    public int getContactsCount() {
+    public int getWordCount() {
         String countQuery = "SELECT  * FROM " + TABLE_WORDS;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(countQuery, null);

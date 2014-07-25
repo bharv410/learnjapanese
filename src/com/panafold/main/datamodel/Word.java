@@ -13,7 +13,6 @@ public class Word {
 		this.kanji = kan;
 //		this.unlocked=unlock;
 //		this.siteurl=site;
-		
 		this.englPhrase = englPh;
 		this.japPhrase = phras;
 		this.imageUrl = url;

@@ -88,7 +88,6 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 			} while (cursor.moveToNext());
 		}
 			    cursor.close();
-			
 		// return contact list
 		return wordList;
 	}

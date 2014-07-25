@@ -1,6 +1,9 @@
 package com.panafold.main;
 
 import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,6 +29,7 @@ import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 import com.panafold.R;
 import com.panafold.adapter.TabsPagerAdapter;
 import com.panafold.main.datamodel.DatabaseHandler;
+import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.SqlLiteDbHelper;
 import com.panafold.main.datamodel.Word;
 
@@ -38,7 +42,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
-	
+	DatabaseHandler dh;
 	public static Typeface gothamFont,neutrafaceFont;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -64,20 +68,71 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 		gothamFont = Typeface.createFromAsset(getAssets(), "fonts/Gotham-Book.ttf");
 		neutrafaceFont= Typeface.createFromAsset(getAssets(), "fonts/NeutraText-Bold.otf");
 		
-	
+		 dh = new DatabaseHandler(MainActivity.this);
 		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
 		try {
 			dbhelper.CopyDataBaseFromAsset();
 			dbhelper.openDataBase();
 			List<Word> allWords = dbhelper.getAllWords();
 			for(Word w: allWords){
-				System.out.println(w.getEnglish()+", "+w.getKanji());
+				
+				
+				//send some to reviewmenu review section. 9 days after timestamp of seen
+				
+				
+				//send some to reviewmenu SEEN section
+				
+				//set todays word and update its timestamp of seen
+				
+				
+				
+				//1st day they open the app
+				// english word should be saved to "seen" db with a flag for review and a timestamp that they saw it
+				
+				//everytime they open the app. the db will load all "seen"words and update reviewflag if 9 days has passed
+				
+				
+				
+				
+				
+				//db should record # of words seen
+				//for i upto wordsseen.length
+				//if reviewTheseWords.contains(w.getEngligh)
+				//
+				
+				
+				 
+				//dh.addWord(w);
+				
 			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
-		
+		//get seen words. dont have to be reviewed tho
+		for(ReviewWord r: dh.getReviewWords(false)){
+//			System.out.println("BEFOREUPDATE: "+r.getEnglish()+" "+r.getReview());
+//			dh.setAsSeen(r.getEnglish());
+//			
+			System.out.println("nothighlighted: "+r.getEnglish()+" "+r.getReview());
+			
+			String string = r.getTimeStamp();
+			Date date;
+			try {
+				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH).parse(string);
+				System.out.println(date);
+				
+				//if the date is 9 days in the past then simply
+				//increment the number
+				//if they indeed review it then we must set it back to 0
+				
+				
+				} catch (ParseException e) {			}
+			
+			
+		}
+		for(ReviewWord ro: dh.getReviewWords(true)){		
+			System.out.println("highlighted: "+ro.getEnglish()+" "+ro.getReview()+ro.getTimeStamp());
+		}
 	}
 	
 	@Override
