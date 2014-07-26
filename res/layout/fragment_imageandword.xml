@@ -64,7 +64,7 @@
             android:layout_above="@+id/japaneseTextView"
             android:layout_marginBottom="2dp"
             android:layout_toRightOf="@+id/lineImageView"
-            android:src="@drawable/weathericon" />
+            android:src="@drawable/_cloudy_android" />
 
         <ProgressBar
             android:id="@+id/weatherProgressBar"

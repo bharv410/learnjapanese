@@ -52,14 +52,14 @@ public class CurrentWordFragment extends Fragment {
         TextView dateview = (TextView) getActivity().findViewById(R.id.dateTextView);
         dateview.setTypeface(MainActivity.gothamFont);
 		dateview.setText(month_name);
-		MainActivity.dateShown=true; 
+		MainActivity.shown=0; 
 		
 		//if you click the bottom part of screen it will toggle between date or japanese translation
 		RelativeLayout relativeclic1 =(RelativeLayout)getActivity().findViewById(R.id.relativeLayout1);
         relativeclic1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-            	if(MainActivity.dateShown){
+            	if(MainActivity.shown%3==0){
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.VISIBLE);
     		    	TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
@@ -75,7 +75,11 @@ public class CurrentWordFragment extends Fragment {
     		    	lineImageView.setVisibility(View.INVISIBLE);
     		    	ImageView cloudIconImageView =(ImageView)getActivity().findViewById(R.id.imageView2);
     		    	cloudIconImageView.setVisibility(View.INVISIBLE);
-    	    		MainActivity.dateShown=false;
+    	    		MainActivity.shown++;
+    	    	}else if(MainActivity.shown%3==1){
+    	    		TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
+    		    	romTextView.setText(CurrentWord.theCurrentWord.getHirigana());
+    		    	MainActivity.shown++;
     	    	}else{
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.INVISIBLE);
@@ -90,7 +94,7 @@ public class CurrentWordFragment extends Fragment {
     		    	lineImageView.setVisibility(View.VISIBLE);
     		    	ImageView cloudIconImageView =(ImageView)getActivity().findViewById(R.id.imageView2);
     		    	cloudIconImageView.setVisibility(View.VISIBLE);
-    		    	MainActivity.dateShown=true;
+    	    		MainActivity.shown++;
     	    	}
             }
         });

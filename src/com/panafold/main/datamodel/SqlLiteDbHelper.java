@@ -52,7 +52,7 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 	}
 
 	// Getting single word
-	Word getWord(String eng) {
+	public Word getWord(String eng) {
 		db = this.getReadableDatabase();
 
 		Cursor cursor = db.query(TABLE_WORDS, new String[] { KEY_ID,KEY_ENGLISH,

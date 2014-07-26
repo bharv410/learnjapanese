@@ -6,12 +6,13 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.List;
 
 import com.panafold.main.datamodel.Word;
 
 public class CurrentWord {
 public static Word theCurrentWord;
-	
+public static List<Word> allWords;
 	public static String translate(String text) throws IOException {
 		// fetch
 		URL url = new URL(

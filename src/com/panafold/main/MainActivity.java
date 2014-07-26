@@ -3,6 +3,7 @@ package com.panafold.main;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -38,7 +39,7 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
 	private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, 5000, true);
-	public static Boolean dateShown;
+	public static int shown;
 	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
@@ -64,15 +65,18 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 		gothamFont = Typeface.createFromAsset(getAssets(), "fonts/Gotham-Book.ttf");
 		neutrafaceFont= Typeface.createFromAsset(getAssets(), "fonts/NeutraText-Bold.otf");
 		
+		
+		CurrentWord.allWords= new ArrayList<Word>();
+		
 		 dh = new DatabaseHandler(MainActivity.this);
 		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
 		try {
 			dbhelper.CopyDataBaseFromAsset();
 			dbhelper.openDataBase();
 			List<Word> allWords = dbhelper.getAllWords();
-			//for(Word w: allWords){
+			for(Word w: allWords){
 				
-				
+				CurrentWord.allWords.add(w);
 				//send some to reviewmenu review section. 9 days after timestamp of seen
 				
 				
@@ -95,12 +99,12 @@ public class MainActivity extends FragmentActivity implements TextToSpeech.OnIni
 				//for i upto wordsseen.length
 				//if reviewTheseWords.contains(w.getEngligh)
 				//
-				
+				if(CurrentWord.theCurrentWord==null)
 				CurrentWord.theCurrentWord=allWords.get(1);
 				 
 				//dh.addWord(w);
 				
-			//}
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
