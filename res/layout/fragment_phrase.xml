@@ -1,0 +1,24 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:background="#CD7552" >
+
+    <TextView
+        android:id="@+id/englishPhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"
+        android:text="English Phrase"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/japanesePhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/englishPhrase"
+        android:layout_centerHorizontal="true"
+        android:text="Japanese Phrase"
+        android:textSize="30sp" />
+
+</RelativeLayout>
