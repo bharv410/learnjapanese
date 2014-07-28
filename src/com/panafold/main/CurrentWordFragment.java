@@ -5,10 +5,13 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import android.content.Context;
+import android.media.AudioManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
+import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -36,22 +39,24 @@ public class CurrentWordFragment extends Fragment {
         TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
         text.setTypeface(MainActivity.neutrafaceFont);
 		text.setText(CurrentWord.theCurrentWord.getEnglish());
-        
 		//set thejapenese text
 		TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
 		text2.setText(CurrentWord.theCurrentWord.getKanji());
         
         //initialize progress bar
-        weatherPB=(ProgressBar)getActivity().findViewById(R.id.weatherProgressBar);
-        weatherPB.setVisibility(ProgressBar.VISIBLE);
+//        weatherPB=(ProgressBar)getActivity().findViewById(R.id.weatherProgressBar);
+//        weatherPB.setVisibility(ProgressBar.VISIBLE);
         
         //set current date and time 
         Calendar cal=Calendar.getInstance();
-        SimpleDateFormat month_date = new SimpleDateFormat("F MMMM\nEEE",Locale.US);
+        SimpleDateFormat month_date = new SimpleDateFormat("F MMMM",Locale.US);
+        SimpleDateFormat day_date = new SimpleDateFormat("EEE",Locale.US);
         String month_name = month_date.format(cal.getTime());
+        String day_name = day_date.format(cal.getTime());
+        String daytext = day_name.toUpperCase(Locale.US);
         TextView dateview = (TextView) getActivity().findViewById(R.id.dateTextView);
         dateview.setTypeface(MainActivity.gothamFont);
-		dateview.setText(month_name);
+		dateview.setText(month_name + "\n " +daytext);
 		MainActivity.shown=0; 
 		
 		//if you click the bottom part of screen it will toggle between date or japanese translation
@@ -59,6 +64,11 @@ public class CurrentWordFragment extends Fragment {
         relativeclic1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
+            	v.playSoundEffect(SoundEffectConstants.CLICK);
+            	AudioManager audioManager = 
+            	        (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
+            	        audioManager.playSoundEffect(SoundEffectConstants.CLICK); 
+            	        
             	if(MainActivity.shown%3==0){
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.VISIBLE);
