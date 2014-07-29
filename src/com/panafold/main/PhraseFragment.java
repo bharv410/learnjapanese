@@ -18,6 +18,7 @@ public class PhraseFragment extends Fragment {
         engPhr.setText(CurrentWord.theCurrentWord.getEnglPhrase());
         TextView japPhr =(TextView)getActivity().findViewById(R.id.japanesePhrase);
         japPhr.setText(CurrentWord.theCurrentWord.getJapPhrase());
+        japPhr.setText("天気がいいです");
     }
 
     @Override

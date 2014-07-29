@@ -21,4 +21,14 @@
         android:text="Japanese Phrase"
         android:textSize="30sp" />
 
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/englishPhrase"
+        android:layout_alignParentRight="true"
+        android:text=""
+        android:background="@drawable/soundicon"
+        android:onClick="speakOutPhrase" />
+
 </RelativeLayout>

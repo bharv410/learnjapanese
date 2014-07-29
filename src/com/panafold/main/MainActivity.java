@@ -65,7 +65,7 @@ public class MainActivity extends FragmentActivity implements
 		// Bind the title indicator to the adapter
 		LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		titleIndicator.setViewPager(viewPager);
-titleIndicator.setCurrentItem(1);
+		titleIndicator.setCurrentItem(1);
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
 
@@ -189,14 +189,19 @@ titleIndicator.setCurrentItem(1);
 	}
 
 	public void speakOut(View v) {
-		speakOut();
+		// speak the japanese text
+				TextView textview = (TextView) findViewById(R.id.japaneseTextView);
+				speakOut(textview.getText().toString());
 	}
 
-	private void speakOut() {
-		// speak the japanese text
-		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
-		tts.speak(textview.getText().toString(), TextToSpeech.QUEUE_FLUSH, null);
+	private void speakOut(String text) {
+		tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
 
+	}
+	
+	public void speakOutPhrase(View v){
+		TextView textview = (TextView) findViewById(R.id.japanesePhrase);
+		speakOut(textview.getText().toString());
 	}
 
 	private void initLocation() {
