@@ -3,7 +3,7 @@
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:orientation="vertical"
-    android:background="#CD7552" >
+    android:background="#555F5F" >
      
     <!-- Editext for Search -->
     <EditText android:id="@+id/inputSearch"

@@ -11,6 +11,7 @@ import java.util.Locale;
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.os.Bundle;
@@ -61,11 +62,36 @@ public class MainActivity extends FragmentActivity implements
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
 		viewPager.setCurrentItem(1);
+		
+		
+		
 
 		// Bind the title indicator to the adapter
-		LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
+		final LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		titleIndicator.setViewPager(viewPager);
 		titleIndicator.setCurrentItem(1);
+		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int i, float v, int i2) {
+            }
+            @Override
+            public void onPageSelected(int i) {
+                if(i==1){
+                	titleIndicator.setBackgroundColor(Color.parseColor("#F8EFCB"));
+                }else{
+                	titleIndicator.setBackgroundColor(Color.parseColor("#555F5F"));
+                }
+                titleIndicator.setCurrentItem(i);
+            }
+            @Override
+            public void onPageScrollStateChanged(int i) {
+
+            }
+        });
+		
+		
+		
+		
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
 
@@ -250,6 +276,7 @@ public class MainActivity extends FragmentActivity implements
 			mBestLocationProvider.stopLocationUpdates();
 
 			ProgressBar weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
+			if(weatherPB!=null)
 			weatherPB.setVisibility(ProgressBar.GONE);
 			// set weather information on screen
 			// mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);

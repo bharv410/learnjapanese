@@ -378,7 +378,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int windy=0x7f02001b;
     }
     public static final class id {
-        public static final int action_settings=0x7f04001a;
+        public static final int action_settings=0x7f04001b;
         public static final int blankTextView=0x7f040013;
         public static final int bottom=0x7f040003;
         public static final int button1=0x7f040014;
@@ -405,6 +405,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int weatherProgressBar=0x7f04000f;
         public static final int weatherTextView=0x7f04000e;
         public static final int webView1=0x7f040016;
+        public static final int wordtext=0x7f04001a;
     }
     public static final class integer {
         public static final int default_circle_indicator_orientation=0x7f070000;
@@ -419,6 +420,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int fragment_movies=0x7f030002;
         public static final int fragment_phrase=0x7f030003;
         public static final int fragment_reviewwords=0x7f030004;
+        public static final int list_item=0x7f030005;
     }
     public static final class menu {
         public static final int main=0x7f0b0000;

@@ -21,7 +21,7 @@
         app:strokeWidth="4dp"
         app:lineWidth="30dp"
         app:unselectedColor="#FF888888"
-        app:selectedColor="#CD7552"
+        app:selectedColor="#FFFFFF"
         android:background="#F8EFCB" 
         />
 

@@ -96,7 +96,7 @@ int drawable vpi__tab_unselected_holo 0x7f020018
 int drawable vpi__tab_unselected_pressed_holo 0x7f020019
 int drawable weathericon 0x7f02001a
 int drawable windy 0x7f02001b
-int id action_settings 0x7f04001a
+int id action_settings 0x7f04001b
 int id blankTextView 0x7f040013
 int id bottom 0x7f040003
 int id button1 0x7f040014
@@ -123,6 +123,7 @@ int id underline 0x7f040002
 int id weatherProgressBar 0x7f04000f
 int id weatherTextView 0x7f04000e
 int id webView1 0x7f040016
+int id wordtext 0x7f04001a
 int integer default_circle_indicator_orientation 0x7f070000
 int integer default_title_indicator_footer_indicator_style 0x7f070001
 int integer default_title_indicator_line_position 0x7f070002
@@ -133,6 +134,7 @@ int layout fragment_imageandword 0x7f030001
 int layout fragment_movies 0x7f030002
 int layout fragment_phrase 0x7f030003
 int layout fragment_reviewwords 0x7f030004
+int layout list_item 0x7f030005
 int menu main 0x7f0b0000
 int string action_settings 0x7f0a0001
 int string app_name 0x7f0a0000

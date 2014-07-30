@@ -3,7 +3,7 @@
     android:id="@+id/relativeLayout1"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#CD7552"
+    android:background="#555F5F"
     android:orientation="vertical"
     android:soundEffectsEnabled="true" >
 

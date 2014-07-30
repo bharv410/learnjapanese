@@ -1,7 +1,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
-    android:background="#CD7552" >
+    android:background="#555F5F" >
 
     <TextView
         android:id="@+id/englishPhrase"

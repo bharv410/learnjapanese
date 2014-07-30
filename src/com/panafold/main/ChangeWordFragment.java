@@ -1,8 +1,9 @@
 package com.panafold.main;
 
-import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
@@ -18,13 +19,12 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.panafold.R;
-import com.panafold.main.datamodel.SqlLiteDbHelper;
 import com.panafold.main.datamodel.Word;
 
 public class ChangeWordFragment extends ListFragment {
 	// Search EditText
 	EditText inputSearch;
-	ArrayAdapter<String> adapter;
+	WordAdapter adapter;
 	ArrayList<String> values;
 
 	@Override
@@ -38,9 +38,9 @@ public class ChangeWordFragment extends ListFragment {
 
 		View rootView = inflater.inflate(R.layout.fragment_reviewwords,
 				container, false);
-		adapter = new ArrayAdapter<String>(getActivity(),
-				android.R.layout.simple_list_item_1, values);
+		adapter = new WordAdapter(getActivity(),R.layout.list_item, CurrentWord.allWords);
 		setListAdapter(adapter);
+		
 		return rootView;
 	}
 
@@ -85,5 +85,37 @@ public class ChangeWordFragment extends ListFragment {
 		Intent i = new Intent(getActivity(), MainActivity.class);
 		startActivity(i);
 
+	}
+	
+	
+	public class WordAdapter extends ArrayAdapter<Word> {
+
+	    private Context context;
+
+	    public WordAdapter(Context context, int textViewResourceId, List<Word> items) {
+	        super(context, textViewResourceId, items);
+	        this.context = context;
+	    }
+
+	    public View getView(int position, View convertView, ViewGroup parent) {
+	        View view = convertView;
+	        if (view == null) {
+	            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+	            view = inflater.inflate(R.layout.list_item, null);
+	            
+	        }
+
+	        Word item = getItem(position);
+	        if (item!= null) {
+	            // My layout has only one TextView
+	            TextView itemView = (TextView) view.findViewById(R.id.wordtext);
+	            if (itemView != null) {
+	                // do whatever you want with your string and long
+	                itemView.setText(item.getEnglish()+"yay");
+	            }
+	         }
+
+	        return view;
+	    }
 	}
 }
