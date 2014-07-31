@@ -34,6 +34,14 @@ public class CurrentWordFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {       
         super.onActivityCreated(savedInstanceState);
         
+      //set big pic image
+      		if (CurrentWord.theCurrentWord.getEnglish().contains("weather") ){
+      		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
+      		bigPic.setImageDrawable(getResources().getDrawable(R.drawable.weather));
+      		}
+        
+        
+        
         //set english text
         TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
         text.setTypeface(MainActivity.gothamFont);

@@ -25,7 +25,6 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 import at.theengine.android.bestlocation.BestLocationListener;
 import at.theengine.android.bestlocation.BestLocationProvider;
 import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
@@ -46,7 +45,7 @@ public class MainActivity extends FragmentActivity implements
 	private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, 5000,
 			true);
 	public static int shown;
-	private ImageView mIvWeather0,bigPic;
+	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
 	DatabaseHandler dh;
@@ -88,11 +87,6 @@ public class MainActivity extends FragmentActivity implements
             }
         });
 		
-		//set big pic image
-		if (CurrentWord.theCurrentWord != null){
-		bigPic=(ImageView)findViewById(R.id.bigPicImageView);
-		bigPic.setBackgroundResource(R.drawable.weather);
-		}
 		
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);

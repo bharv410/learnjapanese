@@ -14,6 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -77,8 +78,6 @@ public class ChangeWordFragment extends ListFragment {
 		for (Word w : CurrentWord.allWords) {
 			if (w.getEnglish().contains(text)) {
 				CurrentWord.theCurrentWord = w;
-				Toast.makeText(getActivity(), CurrentWord.theCurrentWord.getEnglish(),
-						Toast.LENGTH_SHORT).show();
 			}
 		}
 		
@@ -116,6 +115,14 @@ public class ChangeWordFragment extends ListFragment {
 	            if (itemView != null) {
 	                // do whatever you want with your string and long
 	                itemView.setText(item.getEnglish());
+	            }
+	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
+	            if(iv!=null && item.getEnglish().contains("weather")){
+	            	iv.setImageDrawable(getResources().getDrawable(R.drawable.weather));
+	            }else if(iv!=null && item.getEnglish().contains("cellphone")){
+	            	iv.setImageDrawable(getResources().getDrawable(R.drawable.cellphone));
+	            }else{
+	            	iv.setImageDrawable(getResources().getDrawable(R.drawable.weather));
 	            }
 	         }
 

@@ -385,7 +385,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int windy=0x7f02001d;
     }
     public static final class id {
-        public static final int action_settings=0x7f04001d;
+        public static final int action_settings=0x7f04001c;
         public static final int bigPicImageView=0x7f040011;
         public static final int blankTextView=0x7f040014;
         public static final int bottom=0x7f040003;
@@ -396,25 +396,24 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int imageView1=0x7f040007;
         public static final int imageView2=0x7f04000f;
         public static final int indicator=0x7f040006;
-        public static final int inputSearch=0x7f04001a;
+        public static final int inputSearch=0x7f040019;
         public static final int japanesePhrase=0x7f040018;
         public static final int japaneseTextView=0x7f04000b;
         public static final int lineImageView=0x7f04000d;
-        public static final int list_image=0x7f04001b;
+        public static final int list_image=0x7f04001a;
         public static final int none=0x7f040000;
         public static final int notUsedPb=0x7f040015;
         public static final int pager=0x7f040005;
         public static final int relativeLayout1=0x7f040008;
         public static final int relativeLayout2=0x7f040009;
         public static final int romajiOrHiriganaTextView=0x7f04000c;
-        public static final int textView1=0x7f040019;
         public static final int top=0x7f040004;
         public static final int triangle=0x7f040001;
         public static final int underline=0x7f040002;
         public static final int weatherProgressBar=0x7f040010;
         public static final int weatherTextView=0x7f04000e;
         public static final int webView1=0x7f040016;
-        public static final int wordtext=0x7f04001c;
+        public static final int wordtext=0x7f04001b;
     }
     public static final class integer {
         public static final int default_circle_indicator_orientation=0x7f070000;
