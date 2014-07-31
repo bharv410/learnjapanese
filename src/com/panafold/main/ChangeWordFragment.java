@@ -14,6 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -26,20 +28,21 @@ public class ChangeWordFragment extends ListFragment {
 	// Search EditText
 	EditText inputSearch;
 	WordAdapter adapter;
-	ArrayList<String> values;
-
+	List<Word> wordsForAdapter;
+	ReviewWordsFilter filter;
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		// add allwords to array for list
-		values = new ArrayList<String>();
-		for (Word w : CurrentWord.allWords) {
-			values.add(w.getEnglish());
-		}
-
+//		values = new ArrayList<String>();
+//		for (Word w : CurrentWord.allWords) {
+//			values.add(w.getEnglish());
+//		}
+		
+		wordsForAdapter=CurrentWord.allWords;
 		View rootView = inflater.inflate(R.layout.fragment_reviewwords,
 				container, false);
-		adapter = new WordAdapter(getActivity(),R.layout.list_item, CurrentWord.allWords);
+		adapter = new WordAdapter(getActivity(),R.layout.list_item, wordsForAdapter);
 		setListAdapter(adapter);
 		
 		return rootView;
@@ -75,7 +78,7 @@ public class ChangeWordFragment extends ListFragment {
 		final String text = tv.getText().toString();
 
 
-		for (Word w : CurrentWord.allWords) {
+		for (Word w : wordsForAdapter) {
 			if (w.getEnglish().contains(text)) {
 				CurrentWord.theCurrentWord = w;
 			}
@@ -91,7 +94,7 @@ public class ChangeWordFragment extends ListFragment {
 	}
 	
 	
-	public class WordAdapter extends ArrayAdapter<Word> {
+	public class WordAdapter extends ArrayAdapter<Word> implements Filterable{
 
 	    private Context context;
 
@@ -128,5 +131,57 @@ public class ChangeWordFragment extends ListFragment {
 
 	        return view;
 	    }
+	    
+	    @Override
+	    public Filter getFilter() {
+	        if (filter == null)
+	            filter = new ReviewWordsFilter();
+	         
+	        return filter;
+	    }
+	}
+	
+	private class ReviewWordsFilter extends Filter {
+	    @Override
+	    protected FilterResults performFiltering(CharSequence constraint) {
+
+	        FilterResults results = new FilterResults();
+	        // We implement here the filter logic
+	        if (constraint == null || constraint.length() == 0) {
+	            // No filter implemented we return all the list
+	            results.values = wordsForAdapter;
+	            results.count = wordsForAdapter.size();
+	        }
+	        else {
+	            // We perform filtering operation
+	            List<Word> nWordList = new ArrayList<Word>();
+	             
+	            for (Word p : wordsForAdapter) {
+	                if (p.getEnglish().toUpperCase().startsWith(constraint.toString().toUpperCase()))
+	                    nWordList.add(p);
+	            }
+	             
+	            results.values = nWordList;
+	            results.count = nWordList.size();
+	     
+	        }
+	        return results;	    
+	        }
+	 
+	    @Override
+	    protected void publishResults(CharSequence constraint,FilterResults results) {
+	    	// Now we have to inform the adapter about the new list filtered
+	        if (results.count == 0)
+	            adapter.notifyDataSetInvalidated();
+	        else {
+	        	wordsForAdapter =  (List<Word>) results.values;
+	        	for(Word w: wordsForAdapter){
+	        		Toast.makeText(getActivity(), w.getEnglish(), Toast.LENGTH_SHORT).show();
+	        	}
+	        	
+	            adapter.notifyDataSetChanged();
+	        }
+	    }
+	     
 	}
 }
