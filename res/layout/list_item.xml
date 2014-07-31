@@ -4,19 +4,25 @@
     android:layout_height="?android:attr/listPreferredItemHeight"
 
     android:padding="6dip">
+    
+    <ImageView
+            android:id="@+id/list_image"
+            android:layout_width="50dip"
+            android:layout_height="50dip"
+            android:src="@drawable/ic_launcher"/>
     <!-- Item Name -->
+
    <TextView
-		android:id="@+id/wordtext"
-
-		android:layout_width="wrap_content"
-		android:layout_height="26dip"
-
-		android:layout_alignParentTop="true"
-		android:layout_alignParentLeft="true"
-
-		android:textStyle="bold"
-		android:singleLine="true"
-		android:ellipsize="marquee"
-   />
+       android:id="@+id/wordtext"
+       android:layout_width="wrap_content"
+       android:layout_height="26dip"
+       android:textSize="24dp"
+       android:layout_alignBottom="@+id/list_image"
+       android:layout_alignParentRight="true"
+       android:layout_alignTop="@+id/list_image"
+       android:layout_toRightOf="@+id/list_image"
+       android:ellipsize="marquee"
+       android:singleLine="true"
+       android:textStyle="bold" />
 
 </RelativeLayout>

@@ -36,7 +36,7 @@ public class CurrentWordFragment extends Fragment {
         
         //set english text
         TextView text = (TextView) getActivity().findViewById(R.id.englishTextView);
-        text.setTypeface(MainActivity.neutrafaceFont);
+        text.setTypeface(MainActivity.gothamFont);
 		text.setText(CurrentWord.theCurrentWord.getEnglish());
 		//set thejapenese text
 		TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
@@ -63,16 +63,16 @@ public class CurrentWordFragment extends Fragment {
         relativeclic1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
-            	v.playSoundEffect(SoundEffectConstants.CLICK);
-            	AudioManager audioManager = 
-            	        (AudioManager) getActivity().getSystemService(Context.AUDIO_SERVICE);
-            	        audioManager.playSoundEffect(SoundEffectConstants.CLICK); 
-            	        
+            	ProgressBar weatherPB = (ProgressBar) getActivity().findViewById(R.id.weatherProgressBar);
+    			weatherPB.setVisibility(ProgressBar.GONE);
+    			TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
+		    	
             	if(MainActivity.shown%3==0){
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
+    	    		japanTextView.setTypeface(MainActivity.japaneseFont);
     		    	japanTextView.setVisibility(View.VISIBLE);
-    		    	TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
     		    	romTextView.setVisibility(View.VISIBLE);
+    		    	romTextView.setTypeface(MainActivity.neutrafaceFont);
     		    	romTextView.setText(CurrentWord.theCurrentWord.getRomaji());
     		    	
     		    	//show japanese and hide weather and date and line
@@ -86,13 +86,12 @@ public class CurrentWordFragment extends Fragment {
     		    	cloudIconImageView.setVisibility(View.INVISIBLE);
     	    		MainActivity.shown++;
     	    	}else if(MainActivity.shown%3==1){
-    	    		TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
     		    	romTextView.setText(CurrentWord.theCurrentWord.getHirigana());
+    		    	romTextView.setTypeface(MainActivity.japaneseFont);
     		    	MainActivity.shown++;
     	    	}else{
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.INVISIBLE);
-    		    	TextView romTextView = (TextView)getActivity().findViewById(R.id.romajiOrHiriganaTextView);
     		    	romTextView.setVisibility(View.INVISIBLE);
     		    	//hide japanese and show weather and date and line
     		    	TextView dateView = (TextView)getActivity().findViewById(R.id.dateTextView);
@@ -107,6 +106,14 @@ public class CurrentWordFragment extends Fragment {
     	    	}
             }
         });
-        
+      //start weather progressbar to indicate loading
+        if(CurrentWord.weatherString==null){
+      		weatherPB = (ProgressBar) getActivity().findViewById(R.id.weatherProgressBar);
+      		weatherPB.setVisibility(ProgressBar.VISIBLE);
+        }else{
+        	TextView weatherTextView = (TextView)getActivity().findViewById(R.id.weatherTextView);
+        	weatherTextView.setTypeface(MainActivity.gothamFont);
+			weatherTextView.setText(CurrentWord.weatherString);
+        }
     }
 }

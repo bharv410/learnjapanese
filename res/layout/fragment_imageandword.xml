@@ -34,10 +34,12 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/romajiOrHiriganaTextView"
             android:layout_centerHorizontal="true"
+            android:layout_marginTop="10dp"
             android:text="japanese word"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6D6E70"
             android:textSize="40dp"
+            android:gravity="center"
             android:visibility="invisible" />
 
         <ImageView
@@ -48,18 +50,6 @@
             android:layout_marginTop="32dp"
             android:layout_centerHorizontal="true"
             android:src="@drawable/line" />
-
-        <TextView
-            android:id="@+id/romajiOrHiriganaTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imageView2"
-            android:layout_alignLeft="@+id/japaneseTextView"
-            android:layout_alignRight="@+id/japaneseTextView"
-            android:text="" 
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:textColor="#6D6E70"
-            android:textSize="40dp"/>
 
         <TextView
             android:id="@+id/weatherTextView"
@@ -76,26 +66,42 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignTop="@+id/weatherTextView"
-            android:layout_toRightOf="@+id/weatherTextView" />
+            android:layout_toRightOf="@+id/weatherTextView"
+            android:visibility="invisible" />
 
         <ImageView
             android:id="@+id/imageView2"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_alignLeft="@+id/lineImageView"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/lineImageView"
+            android:layout_marginTop="20dp"
+            android:src="@drawable/cloudy" />
+
+        <TextView
+            android:id="@+id/romajiOrHiriganaTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/weatherTextView"
-            android:layout_alignLeft="@+id/lineImageView"
-            android:layout_marginBottom="14dp"
-            android:src="@drawable/cloudy" />
+            android:layout_alignLeft="@+id/japaneseTextView"
+            android:layout_alignParentTop="true"
+            android:layout_alignRight="@+id/japaneseTextView"
+            android:layout_marginTop="40dp"
+            android:gravity="center"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:textColor="#6D6E70"
+            android:textSize="40dp" />
 
     </RelativeLayout>
 
     <ImageView
-        android:id="@+id/imageView1"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/progressBar1"
+        android:id="@+id/bigPicImageView"
+        android:layout_width="195dp"
+        android:layout_height="167dp"
+        android:layout_above="@+id/button1"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
+        android:layout_marginBottom="35dp"
         android:layout_below="@+id/englishTextView"
         android:src="@drawable/cellphone" />
 
@@ -108,7 +114,7 @@
         android:gravity="center"
         android:text="English Text"
         android:textColor="#F8EFCB"
-        android:textSize="30sp" />
+        android:textSize="18sp" />
 
     <TextView
         android:id="@+id/blankTextView"
@@ -122,15 +128,6 @@
         android:textSize="40dp"
         android:visibility="invisible" />
 
-    <Button
-        android:id="@+id/button1"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_above="@+id/relativeLayout2"
-        android:layout_alignParentRight="true"
-        android:background="@drawable/soundicon"
-        android:onClick="speakOut" />
-
     <ProgressBar
         android:id="@+id/notUsedPb"
         android:layout_width="wrap_content"
@@ -138,5 +135,15 @@
         android:layout_above="@+id/button1"
         android:layout_centerHorizontal="true"
         android:visibility="invisible" />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="25dp"
+        android:layout_height="25dp"
+        android:layout_above="@+id/relativeLayout2"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/soundicon"
+        android:onClick="speakOut"
+        android:layout_marginBottom="15dp" />
 
 </RelativeLayout>

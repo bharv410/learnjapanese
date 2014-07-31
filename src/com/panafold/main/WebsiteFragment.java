@@ -22,7 +22,6 @@ public class WebsiteFragment extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	            Bundle savedInstanceState) {
 	        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-	        
 	        currentURL="https://www.google.com/search?q="+CurrentWord.theCurrentWord.getRomaji();
 	        if (currentURL != null) {
 	            WebView wv = (WebView) rootView.findViewById(R.id.webView1);
@@ -31,7 +30,6 @@ public class WebsiteFragment extends Fragment {
 	            wv.loadUrl(currentURL);
 	        }
 			return rootView;
-	
 	    }
 	
 	    private class SwAWebClient extends WebViewClient {

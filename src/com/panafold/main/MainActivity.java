@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -36,7 +37,6 @@ import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.SqlLiteDbHelper;
 import com.panafold.main.datamodel.Word;
 import com.viewpagerindicator.LinePageIndicator;
-import com.viewpagerindicator.TitlePageIndicator;
 
 public class MainActivity extends FragmentActivity implements
 		TextToSpeech.OnInitListener, YahooWeatherInfoListener {
@@ -46,12 +46,12 @@ public class MainActivity extends FragmentActivity implements
 	private YahooWeather mYahooWeather = YahooWeather.getInstance(5000, 5000,
 			true);
 	public static int shown;
-	private ImageView mIvWeather0;
+	private ImageView mIvWeather0,bigPic;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
 	DatabaseHandler dh;
-	public static Typeface gothamFont, neutrafaceFont;
-
+	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
+	private ProgressBar weatherPB;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -61,8 +61,7 @@ public class MainActivity extends FragmentActivity implements
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
-		viewPager.setCurrentItem(1);
-		
+		viewPager.setCurrentItem(1);		
 		
 		
 
@@ -89,8 +88,11 @@ public class MainActivity extends FragmentActivity implements
             }
         });
 		
-		
-		
+		//set big pic image
+		if (CurrentWord.theCurrentWord != null){
+		bigPic=(ImageView)findViewById(R.id.bigPicImageView);
+		bigPic.setBackgroundResource(R.drawable.weather);
+		}
 		
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
@@ -99,8 +101,11 @@ public class MainActivity extends FragmentActivity implements
 		gothamFont = Typeface.createFromAsset(getAssets(),
 				"fonts/Gotham-Book.ttf");
 		neutrafaceFont = Typeface.createFromAsset(getAssets(),
-				"fonts/NeutraText-Bold.otf");
-
+				"fonts/NeutraText-Demi.otf");
+		japaneseFont=Typeface.createFromAsset(getAssets(),
+				"fonts/AozoraMinchoMedium.ttf");
+		
+		
 		CurrentWord.allWords = new ArrayList<Word>();
 
 		dh = new DatabaseHandler(MainActivity.this);
@@ -152,8 +157,13 @@ public class MainActivity extends FragmentActivity implements
 			try {
 				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 						Locale.ENGLISH).parse(string);
-				System.out.println(date);
-
+				System.out.println(string + "\n"+date);
+				System.out.println(string + "\n"+date);
+				Calendar now = Calendar.getInstance();
+				SimpleDateFormat dff= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+						Locale.ENGLISH);
+				System.out.println("now: "+dff.format(now.getTime()));
+				System.out.println("now: "+dff.format(now.getTime()));
 				// if the date is 9 days in the past then simply
 				// increment the number
 				// if they indeed review it then we must set it back to 0
@@ -166,15 +176,11 @@ public class MainActivity extends FragmentActivity implements
 			System.out.println("highlighted: " + ro.getEnglish() + " "
 					+ ro.getReview() + ro.getTimeStamp());
 		}
-	}
-
-	@Override
-	protected void onResume() {
+		
 		initLocation();
 		// get location for waether info
 		mBestLocationProvider
 				.startLocationUpdatesWithListener(mBestLocationListener);
-		super.onResume();
 	}
 
 	@Override
@@ -184,6 +190,7 @@ public class MainActivity extends FragmentActivity implements
 		super.onPause();
 	}
 
+	
 	@Override
 	public void onDestroy() {
 		// Don't forget to shutdown tts!
@@ -259,6 +266,7 @@ public class MainActivity extends FragmentActivity implements
 					mYahooWeather.queryYahooWeatherByLatLon(
 							getApplicationContext(), lat, lng,
 							MainActivity.this);
+					
 				}
 			};
 
@@ -275,8 +283,8 @@ public class MainActivity extends FragmentActivity implements
 			// turn off location updates because they are no longer needed.
 			mBestLocationProvider.stopLocationUpdates();
 
-			ProgressBar weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
-			if(weatherPB!=null)
+			//start weather progressbar to indicate loading
+			weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
 			weatherPB.setVisibility(ProgressBar.GONE);
 			// set weather information on screen
 			// mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);
@@ -290,7 +298,8 @@ public class MainActivity extends FragmentActivity implements
 			try {
 				TextView weatherTextView = (TextView) findViewById(R.id.weatherTextView);
 				weatherTextView.setTypeface(gothamFont);
-				weatherTextView.setText(weatherInfo.getCurrentTempF() + " degrees");
+				CurrentWord.weatherString=weatherInfo.getCurrentTempF() + " degrees";
+				weatherTextView.setText(CurrentWord.weatherString);
 			} catch (Exception e) {
 				System.out.println("Exited app");
 			}

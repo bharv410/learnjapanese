@@ -12,23 +12,23 @@
         android:text="English Phrase"
         android:textSize="30sp" />
 
-    <TextView
-        android:id="@+id/japanesePhrase"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/englishPhrase"
-        android:layout_centerHorizontal="true"
-        android:text="Japanese Phrase"
-        android:textSize="30sp" />
-
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_above="@+id/englishPhrase"
-        android:layout_alignParentRight="true"
-        android:text=""
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/englishPhrase"
         android:background="@drawable/soundicon"
         android:onClick="speakOutPhrase" />
+
+    <TextView
+        android:id="@+id/japanesePhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_below="@+id/englishPhrase"
+        android:layout_centerHorizontal="true"
+        android:text="Japanese Phrase"
+        android:textSize="30sp" />
 
 </RelativeLayout>

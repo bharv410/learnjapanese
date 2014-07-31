@@ -70,17 +70,21 @@ public class ChangeWordFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
+		TextView tv=(TextView)v.findViewById(R.id.wordtext);
+		final String text = tv.getText().toString();
+
 
 		for (Word w : CurrentWord.allWords) {
-			if (w.getEnglish().contains(((TextView) v).getText().toString())) {
+			if (w.getEnglish().contains(text)) {
 				CurrentWord.theCurrentWord = w;
 				Toast.makeText(getActivity(), CurrentWord.theCurrentWord.getEnglish(),
 						Toast.LENGTH_SHORT).show();
 			}
 		}
 		
+		
 
-		final String text = ((TextView) v).getText().toString();
+		
 		// CurrentWord.currentEnglishWord=text;
 		Intent i = new Intent(getActivity(), MainActivity.class);
 		startActivity(i);
@@ -111,7 +115,7 @@ public class ChangeWordFragment extends ListFragment {
 	            TextView itemView = (TextView) view.findViewById(R.id.wordtext);
 	            if (itemView != null) {
 	                // do whatever you want with your string and long
-	                itemView.setText(item.getEnglish()+"yay");
+	                itemView.setText(item.getEnglish());
 	            }
 	         }
 
