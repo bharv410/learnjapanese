@@ -6,14 +6,17 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.util.HashMap;
 import java.util.List;
 
+import com.panafold.R;
 import com.panafold.main.datamodel.Word;
 
 public class CurrentWord {
 public static Word theCurrentWord;
 public static List<Word> allWords;
 public static String weatherString;
+public static HashMap<String,Integer> getImage;
 	public static String translate(String text) throws IOException {
 		// fetch
 		URL url = new URL(
@@ -35,5 +38,10 @@ public static String weatherString;
 		return sb.toString().replace("\\n", "\n").replaceAll("\\\\(.)", "$1");
 	}
 
-
+public static void initHashMap(){
+	getImage= new HashMap<String,Integer>();
+	getImage.put("weather", R.drawable.weather);
+	getImage.put("cellphone", R.drawable.cellphone);
+	getImage.put("23", R.drawable.weather);
+}
 }

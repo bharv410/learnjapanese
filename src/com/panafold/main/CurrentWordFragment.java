@@ -4,12 +4,9 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
-import android.content.Context;
-import android.media.AudioManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
-import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -39,7 +36,6 @@ public class CurrentWordFragment extends Fragment {
       		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
       		bigPic.setImageDrawable(getResources().getDrawable(R.drawable.weather));
       		}
-        
         
         
         //set english text

@@ -62,8 +62,7 @@ public class MainActivity extends FragmentActivity implements
 		viewPager.setAdapter(mAdapter);
 		viewPager.setCurrentItem(1);		
 		
-		
-
+CurrentWord.initHashMap();
 		// Bind the title indicator to the adapter
 		final LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		titleIndicator.setViewPager(viewPager);
