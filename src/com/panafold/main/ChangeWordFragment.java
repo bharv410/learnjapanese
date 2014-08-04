@@ -5,11 +5,17 @@ import java.util.List;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +23,6 @@ import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Filterable;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -125,11 +130,31 @@ public class ChangeWordFragment extends ListFragment {
 	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
 	            if(iv!=null){
 	            	System.out.println(item);
-	            	iv.setImageDrawable(getResources().getDrawable(CurrentWord.getImage.get(item)));
+	            	
+	            	BitmapFactory.Options options = new BitmapFactory.Options();
+					options.inPurgeable = true; // inPurgeable is used to free up
+												// memory while required
+					Bitmap bm = drawableToBitmap(getResources().getDrawable(CurrentWord.getImage.get(item)));
+					Bitmap bm2 = Bitmap.createScaledBitmap(bm, bm.getWidth()/3,
+							bm.getHeight()/3, true);
+	            	
+	            	iv.setImageBitmap(bm2);
 	            }
 	         }
 
 	        return view;
 	    }
+	}
+	public  Bitmap drawableToBitmap (Drawable drawable) {
+	    if (drawable instanceof BitmapDrawable) {
+	        return ((BitmapDrawable)drawable).getBitmap();
+	    }
+
+	    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
+	    Canvas canvas = new Canvas(bitmap); 
+	    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+	    drawable.draw(canvas);
+
+	    return bitmap;
 	}
 }

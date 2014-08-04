@@ -512,7 +512,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int bottom=0x7f040003;
         public static final int button1=0x7f040012;
         public static final int dateTextView=0x7f040010;
-        public static final int englishPhrase=0x7f040018;
+        public static final int englishPhrase=0x7f04001a;
         public static final int englishTextView=0x7f040013;
         public static final int imageView1=0x7f040007;
         public static final int imageView2=0x7f04000e;
@@ -530,7 +530,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int relativeLayout2=0x7f040009;
         public static final int reviewFragment=0x7f04001b;
         public static final int romajiOrHiriganaTextView=0x7f04000b;
-        public static final int romajiPhrase=0x7f04001a;
+        public static final int romajiPhrase=0x7f040018;
         public static final int top=0x7f040004;
         public static final int triangle=0x7f040001;
         public static final int underline=0x7f040002;
