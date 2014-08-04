@@ -28,14 +28,18 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 	private SQLiteDatabase db;
 
 	// Contacts Table Columns names
-	private static final String KEY_ID = "id";
+//	private static final String KEY_ID = "id";
 	private static final String KEY_ENGLISH = "english";
 	private static final String KEY_ROMAJI = "romaji";
-	private static final String KEY_HIRIGANA = "hirigana";
+	private static final String KEY_HIRIGANA = "hiriganaKatakana";
 	private static final String KEY_KANJI = "kanji";
-	private static final String KEY_ENGPHRASE = "engphrase";
-	private static final String KEY_JAPPHRASE = "japphrase";
-	private static final String KEY_URL = "imageurl";
+	private static final String KEY_UNLOCK = "unlock";
+	private static final String KEY_ENGPHRASE = "englishPhrase";
+	private static final String KEY_JAPPHRASE = "japanesePhrase";
+	private static final String KEY_IMAGENAME = "image";
+	private static final String KEY_ROMAJIPHRASE = "romajiPhrase";
+	private static final String KEY_TIMESTAMP = "timestamp";
+	private static final String KEY_ATTRIBUTION = "attribution";
 
 	Context ctx;
 
@@ -55,15 +59,17 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 	public Word getWord(String eng) {
 		db = this.getReadableDatabase();
 
-		Cursor cursor = db.query(TABLE_WORDS, new String[] { KEY_ID,KEY_ENGLISH,
-				KEY_ROMAJI, KEY_HIRIGANA, KEY_KANJI, KEY_JAPPHRASE,
-				KEY_ENGPHRASE, KEY_URL }, KEY_ENGLISH + "=?",
+		Cursor cursor = db.query(TABLE_WORDS, new String[] { KEY_ENGLISH,
+				KEY_ROMAJI, KEY_HIRIGANA, KEY_KANJI, KEY_UNLOCK,KEY_ENGPHRASE,KEY_JAPPHRASE,
+				KEY_IMAGENAME,KEY_ROMAJIPHRASE,KEY_TIMESTAMP,KEY_ATTRIBUTION
+				}, KEY_ENGLISH + "=?",
 				new String[] { String.valueOf(eng) }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
-		Word curWord = new Word(cursor.getInt(0), cursor.getString(1),
-				cursor.getString(2), cursor.getString(3), cursor.getString(4),
-				cursor.getString(5), cursor.getString(6), cursor.getString(7));
+		Word curWord = new Word(cursor.getString(0), cursor.getString(1),
+				cursor.getString(2), cursor.getString(3), cursor.getInt(4),
+				cursor.getString(5), cursor.getString(6), cursor.getString(7)
+				, cursor.getString(8), cursor.getInt(9), cursor.getString(10));
 		// return contact
 		return curWord;
 	}
@@ -79,10 +85,10 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 		// looping through all rows and adding to list
 		if (cursor.moveToFirst()) {
 			do {
-				Word curWord = new Word(cursor.getInt(0), cursor.getString(1),
-						cursor.getString(2), cursor.getString(3),
-						cursor.getString(4), cursor.getString(5),
-						cursor.getString(6), cursor.getString(7));
+				Word curWord = new Word(cursor.getString(0), cursor.getString(1),
+						cursor.getString(2), cursor.getString(3), cursor.getInt(4),
+						cursor.getString(5), cursor.getString(6), cursor.getString(7)
+						, cursor.getString(8), cursor.getInt(9), cursor.getString(10));
 				// Adding contact to list
 				wordList.add(curWord);
 			} while (cursor.moveToNext());

@@ -121,6 +121,7 @@ public class ChangeWordFragment extends ListFragment {
 	            }
 	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
 	            if(iv!=null){
+	            	System.out.println(item);
 	            	iv.setImageDrawable(getResources().getDrawable(CurrentWord.getImage.get(item)));
 	            }
 	         }

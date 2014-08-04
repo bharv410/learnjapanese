@@ -31,11 +31,10 @@ public class CurrentWordFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {       
         super.onActivityCreated(savedInstanceState);
         
-      //set big pic image
-      		if (CurrentWord.theCurrentWord.getEnglish().contains("weather") ){
+      //set big pic image to the corresponding resource in the static hashmap
       		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
-      		bigPic.setImageDrawable(getResources().getDrawable(R.drawable.weather));
-      		}
+      		bigPic.setImageDrawable(getResources().getDrawable(CurrentWord.getImage.get(CurrentWord.theCurrentWord.getEnglish())));
+      		
         
         
         //set english text
