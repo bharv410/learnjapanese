@@ -15,7 +15,6 @@ import android.os.Bundle;
 import android.support.v4.app.ListFragment;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,22 +36,16 @@ public class ChangeWordFragment extends ListFragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		// add allwords to array for list
-//		values = new ArrayList<String>();
-//		for (Word w : CurrentWord.allWords) {
-//			values.add(w.getEnglish());
-//		}
+		
 		wordsForAdapter= new ArrayList<String>();
 		for(Word w:CurrentWord.allWords){
 			wordsForAdapter.add(w.getEnglish());
 		}
 		
-		
 		View rootView = inflater.inflate(R.layout.fragment_reviewwords,
 				container, false);
 		adapter = new WordAdapter(getActivity(),R.layout.list_item, wordsForAdapter);
 		setListAdapter(adapter);
-		
 		return rootView;
 	}
 
@@ -92,9 +85,6 @@ public class ChangeWordFragment extends ListFragment {
 				CurrentWord.theCurrentWord = w;
 			}
 		}
-		
-		
-
 		
 		// CurrentWord.currentEnglishWord=text;
 		Intent i = new Intent(getActivity(), MainActivity.class);
@@ -141,7 +131,6 @@ public class ChangeWordFragment extends ListFragment {
 	            	iv.setImageBitmap(bm2);
 	            }
 	         }
-
 	        return view;
 	    }
 	}
