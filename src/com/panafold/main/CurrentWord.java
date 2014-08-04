@@ -8,16 +8,20 @@ import java.net.URLConnection;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Random;
 
 import com.panafold.R;
+import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.Word;
 
 public class CurrentWord {
 	public static Word theCurrentWord;
 	public static List<Word> allWords;
+	public static List<ReviewWord> alreadySeen;
+	public static List<String> alreadySeenStrings;
 	public static String weatherString;
 	public static HashMap<String, Integer> getImage;
-
+	public static String currentColor;
 	public static String translate(String text) throws IOException {
 		// fetch
 		URL url = new URL(
@@ -38,7 +42,19 @@ public class CurrentWord {
 			sb.append(splits[i]);
 		return sb.toString().replace("\\n", "\n").replaceAll("\\\\(.)", "$1");
 	}
-
+	public static void initStrings() {
+		String[] colors= new String[5];
+		colors[0]="#CD7552";
+		colors[1]="#555F5F";
+		colors[2]="#99AB4C";
+		colors[3]="#F6B076";
+		colors[4]="#78C1A8";
+		
+		Random rd = new Random();
+		int randomNum =rd.nextInt(5);
+		currentColor=colors[randomNum];
+	
+	}
 	public static void initHashMap() {
 		getImage = new HashMap<String, Integer>();
 		getImage.put("weather", R.drawable.weather);

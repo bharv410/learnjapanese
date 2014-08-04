@@ -4,6 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Locale;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -63,6 +64,11 @@ public class CurrentWordFragment extends Fragment {
 		
 		//if you click the bottom part of screen it will toggle between date or japanese translation
 		RelativeLayout relativeclic1 =(RelativeLayout)getActivity().findViewById(R.id.relativeLayout1);
+		
+		//set background to the current random color
+		relativeclic1.setBackgroundColor(Color.parseColor(CurrentWord.currentColor));
+		
+		//set on click listener to change textviews
         relativeclic1.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v){
@@ -76,7 +82,8 @@ public class CurrentWordFragment extends Fragment {
     		    	japanTextView.setVisibility(View.VISIBLE);
     		    	romTextView.setVisibility(View.VISIBLE);
     		    	romTextView.setTypeface(MainActivity.neutrafaceFont);
-    		    	romTextView.setText(CurrentWord.theCurrentWord.getRomaji());
+    		    	String romText = CurrentWord.theCurrentWord.getRomaji().replace("\r\n", " ").replace("\n", " ");
+    		    	romTextView.setText(romText);
     		    	
     		    	//show japanese and hide weather and date and line
     		    	TextView dateView = (TextView)getActivity().findViewById(R.id.dateTextView);
@@ -89,9 +96,10 @@ public class CurrentWordFragment extends Fragment {
     		    	cloudIconImageView.setVisibility(View.INVISIBLE);
     	    		MainActivity.shown++;
     	    	}else if(MainActivity.shown%3==1){
-    		    	romTextView.setText(CurrentWord.theCurrentWord.getHirigana());
+    	    		String romText2 = CurrentWord.theCurrentWord.getHirigana().replace("\r\n", " ").replace("\n", " ");
+    		    	romTextView.setText(romText2);
     		    	romTextView.setTypeface(MainActivity.japaneseFont);
-    		    	MainActivity.shown++;
+    		    	MainActivity.shown++;MainActivity.shown++;
     	    	}else{
     	    		TextView japanTextView = (TextView)getActivity().findViewById(R.id.japaneseTextView);
     		    	japanTextView.setVisibility(View.INVISIBLE);

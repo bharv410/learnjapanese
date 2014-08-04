@@ -51,6 +51,8 @@ public class MainActivity extends FragmentActivity implements
 	DatabaseHandler dh;
 	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
 	private ProgressBar weatherPB;
+	private Boolean currentWordIsSet;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -60,33 +62,37 @@ public class MainActivity extends FragmentActivity implements
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
-		viewPager.setCurrentItem(1);		
-		
-CurrentWord.initHashMap();
+		viewPager.setCurrentItem(1);
+
+		CurrentWord.initHashMap();
+		CurrentWord.initStrings();
+		currentWordIsSet=false;
 		// Bind the title indicator to the adapter
 		final LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		titleIndicator.setViewPager(viewPager);
 		titleIndicator.setCurrentItem(1);
 		viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
-            @Override
-            public void onPageScrolled(int i, float v, int i2) {
-            }
-            @Override
-            public void onPageSelected(int i) {
-                if(i==1){
-                	titleIndicator.setBackgroundColor(Color.parseColor("#F8EFCB"));
-                }else{
-                	titleIndicator.setBackgroundColor(Color.parseColor("#555F5F"));
-                }
-                titleIndicator.setCurrentItem(i);
-            }
-            @Override
-            public void onPageScrollStateChanged(int i) {
+			@Override
+			public void onPageScrolled(int i, float v, int i2) {
+			}
+			@Override
+			public void onPageSelected(int i) {
+				if (i == 1) {
+					titleIndicator.setBackgroundColor(Color
+							.parseColor("#F8EFCB"));
+				} else {
+					titleIndicator.setBackgroundColor(Color
+							.parseColor("#555F5F"));
+				}
+				titleIndicator.setCurrentItem(i);
+			}
 
-            }
-        });
-		
-		
+			@Override
+			public void onPageScrollStateChanged(int i) {
+
+			}
+		});
+
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
 
@@ -95,10 +101,9 @@ CurrentWord.initHashMap();
 				"fonts/Gotham-Book.ttf");
 		neutrafaceFont = Typeface.createFromAsset(getAssets(),
 				"fonts/NeutraText-Demi.otf");
-		japaneseFont=Typeface.createFromAsset(getAssets(),
+		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
-		
-		
+
 		CurrentWord.allWords = new ArrayList<Word>();
 
 		dh = new DatabaseHandler(MainActivity.this);
@@ -107,33 +112,26 @@ CurrentWord.initHashMap();
 			dbhelper.CopyDataBaseFromAsset();
 			dbhelper.openDataBase();
 			List<Word> allWords = dbhelper.getAllWords();
-			for (Word w : allWords) {
-
-				CurrentWord.allWords.add(w);
-				// send some to reviewmenu review section. 9 days after
-				// timestamp of seen
-
-				// send some to reviewmenu SEEN section
-
-				// set todays word and update its timestamp of seen
-
-				// 1st day they open the app
-				// english word should be saved to "seen" db with a flag for
-				// review and a timestamp that they saw it
-
-				// everytime they open the app. the db will load all "seen"words
-				// and update reviewflag if 9 days has passed
-
-				// db should record # of words seen
-				// for i upto wordsseen.length
-				// if reviewTheseWords.contains(w.getEngligh)
-				//
-				if (CurrentWord.theCurrentWord == null)
-					CurrentWord.theCurrentWord = allWords.get(1);
-
-				// dh.addWord(w);
-
+			CurrentWord.alreadySeen= new ArrayList<ReviewWord>();
+			CurrentWord.alreadySeenStrings= new ArrayList<String>();
+			for (ReviewWord r : dh.getReviewWords(false)) {
+				CurrentWord.alreadySeen.add(r);
+				CurrentWord.alreadySeenStrings.add(r.getEnglish());
 			}
+			
+			for (Word w : allWords) {
+				//add all words no matter what
+				CurrentWord.allWords.add(w);
+				//find first word that isnt in review. 
+				if(!currentWordIsSet&&(!CurrentWord.alreadySeenStrings.contains(w.getEnglish()))){
+					//check if its already chosen(like if user chose from review menu)
+					if(CurrentWord.theCurrentWord==null)
+					CurrentWord.theCurrentWord=w;
+					currentWordIsSet=true;
+
+				}
+			}
+			dh.addWord(CurrentWord.theCurrentWord);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -150,13 +148,13 @@ CurrentWord.initHashMap();
 			try {
 				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
 						Locale.ENGLISH).parse(string);
-				System.out.println(string + "\n"+date);
-				System.out.println(string + "\n"+date);
+				System.out.println(string + "\n" + date);
+				System.out.println(string + "\n" + date);
 				Calendar now = Calendar.getInstance();
-				SimpleDateFormat dff= new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-						Locale.ENGLISH);
-				System.out.println("now: "+dff.format(now.getTime()));
-				System.out.println("now: "+dff.format(now.getTime()));
+				SimpleDateFormat dff = new SimpleDateFormat(
+						"yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+				System.out.println("now: " + dff.format(now.getTime()));
+				System.out.println("now: " + dff.format(now.getTime()));
 				// if the date is 9 days in the past then simply
 				// increment the number
 				// if they indeed review it then we must set it back to 0
@@ -169,7 +167,7 @@ CurrentWord.initHashMap();
 			System.out.println("highlighted: " + ro.getEnglish() + " "
 					+ ro.getReview() + ro.getTimeStamp());
 		}
-		
+
 		initLocation();
 		// get location for waether info
 		mBestLocationProvider
@@ -183,7 +181,6 @@ CurrentWord.initHashMap();
 		super.onPause();
 	}
 
-	
 	@Override
 	public void onDestroy() {
 		// Don't forget to shutdown tts!
@@ -216,16 +213,16 @@ CurrentWord.initHashMap();
 
 	public void speakOut(View v) {
 		// speak the japanese text
-				TextView textview = (TextView) findViewById(R.id.japaneseTextView);
-				speakOut(textview.getText().toString());
+		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
+		speakOut(textview.getText().toString());
 	}
 
 	private void speakOut(String text) {
 		tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
 
 	}
-	
-	public void speakOutPhrase(View v){
+
+	public void speakOutPhrase(View v) {
 		TextView textview = (TextView) findViewById(R.id.japanesePhrase);
 		speakOut(textview.getText().toString());
 	}
@@ -259,7 +256,7 @@ CurrentWord.initHashMap();
 					mYahooWeather.queryYahooWeatherByLatLon(
 							getApplicationContext(), lat, lng,
 							MainActivity.this);
-					
+
 				}
 			};
 
@@ -276,22 +273,20 @@ CurrentWord.initHashMap();
 			// turn off location updates because they are no longer needed.
 			mBestLocationProvider.stopLocationUpdates();
 
-			//start weather progressbar to indicate loading
-			weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
-			weatherPB.setVisibility(ProgressBar.GONE);
-			// set weather information on screen
-			// mIvWeather0 = (ImageView) findViewById(R.id.weatherImageView);
-			// if (weatherInfo.getCurrentConditionIcon() != null) {
-			// mIvWeather0.setImageBitmap(weatherInfo.getCurrentConditionIcon());
-			// }
+			
 
 			setWeatherIcon(weatherInfo.getCurrentCode());
 
 			// exception thrown when user exits app but weather info is updated
 			try {
+				// start weather progressbar to indicate loading
+				weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
+				weatherPB.setVisibility(ProgressBar.GONE);
+				
 				TextView weatherTextView = (TextView) findViewById(R.id.weatherTextView);
 				weatherTextView.setTypeface(gothamFont);
-				CurrentWord.weatherString=weatherInfo.getCurrentTempF() + " degrees";
+				CurrentWord.weatherString = weatherInfo.getCurrentTempF()
+						+ " degrees";
 				weatherTextView.setText(CurrentWord.weatherString);
 			} catch (Exception e) {
 				System.out.println("Exited app");

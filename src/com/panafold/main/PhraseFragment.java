@@ -18,7 +18,11 @@ public class PhraseFragment extends Fragment {
         engPhr.setText(CurrentWord.theCurrentWord.getEnglPhrase());
         TextView japPhr =(TextView)getActivity().findViewById(R.id.japanesePhrase);
         japPhr.setText(CurrentWord.theCurrentWord.getJapPhrase());
-        japPhr.setText("天気がいいです");
+        TextView romPhr =(TextView)getActivity().findViewById(R.id.romajiPhrase);
+        romPhr.setText(CurrentWord.theCurrentWord.getRomajiPhrase());
+        
+//        RelativeLayout rl = (RelativeLayout)getActivity().findViewById(R.id.phraseFrag);
+//        rl.setBackgroundColor(Color.parseColor(CurrentWord.currentColor));
     }
 
     @Override

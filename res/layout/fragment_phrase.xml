@@ -1,23 +1,27 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/phraseFrag"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:background="#555F5F" >
 
     <TextView
-        android:id="@+id/englishPhrase"
+        android:id="@+id/romajiPhrase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"
-        android:text="English Phrase"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_below="@+id/japanesePhrase"
+        android:layout_marginTop="15dp"
+        android:gravity="center"
+        android:text="Romaji Phrase"
         android:textSize="30sp" />
 
     <Button
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_toRightOf="@+id/englishPhrase"
+        android:layout_below="@+id/romajiPhrase"
+        android:layout_centerHorizontal="true"
         android:background="@drawable/soundicon"
         android:onClick="speakOutPhrase" />
 
@@ -25,10 +29,24 @@
         android:id="@+id/japanesePhrase"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:layout_below="@+id/englishPhrase"
-        android:layout_centerHorizontal="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_centerVertical="true"
+        android:gravity="center"
+        android:layout_marginTop="15dp"
         android:text="Japanese Phrase"
+        android:textSize="30sp" />
+
+    <TextView
+        android:id="@+id/englishPhrase"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/japanesePhrase"
+        android:gravity="center"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginTop="15dp"
+        android:text="English Phrase"
         android:textSize="30sp" />
 
 </RelativeLayout>

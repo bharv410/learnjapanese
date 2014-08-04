@@ -18,17 +18,6 @@
         android:soundEffectsEnabled="true" >
 
         <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="38dip"
-            android:text="Date"
-            android:textColor="#6D6E70"
-            android:textSize="40sp" />
-
-        <TextView
             android:id="@+id/japaneseTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -83,14 +72,25 @@
             android:id="@+id/romajiOrHiriganaTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/japaneseTextView"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentRight="true"
             android:layout_alignParentTop="true"
-            android:layout_alignRight="@+id/japaneseTextView"
             android:layout_marginTop="40dp"
             android:gravity="center"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6D6E70"
             android:textSize="40dp" />
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Date"
+            android:textColor="#6D6E70"
+            android:textSize="36sp" />
 
     </RelativeLayout>
 

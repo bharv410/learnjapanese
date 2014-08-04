@@ -22,7 +22,7 @@ public class WebsiteFragment extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	            Bundle savedInstanceState) {
 	        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-	        currentURL="https://www.google.com/search?q="+CurrentWord.theCurrentWord.getRomaji();
+	        currentURL="https://www.youtube.com/results?search_query="+CurrentWord.theCurrentWord.getRomaji();
 	        if (currentURL != null) {
 	            WebView wv = (WebView) rootView.findViewById(R.id.webView1);
 	            wv.getSettings().setJavaScriptEnabled(true);
@@ -31,7 +31,6 @@ public class WebsiteFragment extends Fragment {
 	        }
 			return rootView;
 	    }
-	
 	    private class SwAWebClient extends WebViewClient {
 	        @Override
 	        public boolean shouldOverrideUrlLoading(WebView view, String url) {
