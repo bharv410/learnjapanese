@@ -119,7 +119,6 @@ public class ChangeWordFragment extends ListFragment {
 	            }
 	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
 	            if(iv!=null){
-	            	System.out.println(item);
 	            	
 	            	BitmapFactory.Options options = new BitmapFactory.Options();
 					options.inPurgeable = true; // inPurgeable is used to free up

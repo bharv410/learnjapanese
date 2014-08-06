@@ -5,12 +5,9 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
@@ -53,7 +50,7 @@ public class MainActivity extends FragmentActivity implements
 	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
-	LocalDBHelper dh;
+	LocalDBHelper dynamicdb;
 	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
 	private ProgressBar weatherPB;
 	private Boolean currentWordIsSet;
@@ -63,19 +60,6 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-		
-		
-		Calendar now = Calendar.getInstance();
-		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
-				Locale.ENGLISH);
-			saveDate(dff.format(now.getTime()));
-		
-		
-		
-		
-		
-		
-		
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -120,55 +104,14 @@ public class MainActivity extends FragmentActivity implements
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
 
-		CurrentWord.allWords = new ArrayList<Word>();
-
-		dh = new LocalDBHelper(MainActivity.this);
-		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
-		try {
-			//grabs all SAVED words and adds to CurrnetWord.alreadySeen
-			CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
-			CurrentWord.alreadySeenStrings = new ArrayList<String>();
-			for (ReviewWord r : dh.getReviewWords(false)) {
-				CurrentWord.alreadySeen.add(r);
-				CurrentWord.alreadySeenStrings.add(r.getEnglish());
-			}
+		
+		setupDatabases();
 			
-			dbhelper.CopyDataBaseFromAsset();
-			dbhelper.openDataBase();
-			List<Word> allWords = dbhelper.getAllWords();
-			//grabs all words no matter what
-			for (Word w : allWords) {
-				CurrentWord.allWords.add(w);
-				// find first word that isnt in review.
-				if (!currentWordIsSet
-						&& (!CurrentWord.alreadySeenStrings.contains(w
-								.getEnglish()))) {
-					// check if its already chosen(like if user chose from
-					// review menu)
-					if (CurrentWord.theCurrentWord == null&&itsANewDay()){
-						//save new word to db and set it for the main page
-						CurrentWord.theCurrentWord = w;
-						dh.addWord(CurrentWord.theCurrentWord);
-					}else{
-						//word was chosen. or its the same day
-						
-						//so if word wasnt chosen.set word to last reviewed word
-						if (CurrentWord.theCurrentWord== null){
-							for(Word wrd:allWords){
-								if(wrd.getEnglish().contains(CurrentWord.alreadySeen.get(CurrentWord.alreadySeen.size()-1).getEnglish())){
-									CurrentWord.theCurrentWord=wrd;
-								}
-							}
-						}
-					}
-					currentWordIsSet = true;
-				}
-			}
+			showCorrectWord();
+			
 			//saves the word that was just set as current
 			
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		
 //		// get seen words. dont have to be reviewed tho
 //		for (ReviewWord r : dh.getReviewWords(false)) {
 //			// System.out.println("BEFOREUPDATE: "+r.getEnglish()+" "+r.getReview());
@@ -238,7 +181,57 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
+	private void setupDatabases(){
+		try {
+		CurrentWord.allWords = new ArrayList<Word>();
+		CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
+		CurrentWord.alreadySeenStrings = new ArrayList<String>();
+		dynamicdb = new LocalDBHelper(MainActivity.this);
+		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
+			dbhelper.CopyDataBaseFromAsset();
+			dbhelper.openDataBase();
+			for (ReviewWord r : dynamicdb.getReviewWords(false)) {
+				CurrentWord.alreadySeenStrings.add(r.getEnglish());
+			}
+			//grabs all words that were ever seen and adds to CurrnetWord.alreadySeen
+			CurrentWord.alreadySeen=dynamicdb.getReviewWords(false);
+			//grabs all words from the given DB and adds to CurrentWord.allWords
+			CurrentWord.allWords = dbhelper.getAllWords();
+			
+		} catch (IOException e1) {
+			e1.printStackTrace();
+			}
+		}
+	
+private void showCorrectWord(){
+	for (Word w : CurrentWord.allWords) {
+		
+		// if no word has been chosen. and current word isnt in review list. then we found the word that should be shown next
+		if (!currentWordIsSet
+				&& (!CurrentWord.alreadySeenStrings.contains(w
+						.getEnglish()))) {
 
+
+			//if no word has been chosen and its a new day. then show new word and save to db
+			if (CurrentWord.theCurrentWord == null&&itsANewDay()){
+				CurrentWord.theCurrentWord = w;
+				dynamicdb.addWord(CurrentWord.theCurrentWord);
+				
+			}else if(CurrentWord.theCurrentWord == null&&(!itsANewDay())){
+				//no word was chosen. but its the same day
+
+					for(Word wrd:CurrentWord.allWords){
+						//show the same word as earlier that day
+						if(wrd.getEnglish().contains(CurrentWord.alreadySeen.get(CurrentWord.alreadySeen.size()-1).getEnglish())){
+							CurrentWord.theCurrentWord=wrd;
+						
+					}
+				}
+			}
+			currentWordIsSet = true;
+		}
+	}
+}
 	public void speakOut(View v) {
 		// speak the japanese text
 		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
@@ -474,38 +467,45 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
-	private void saveDateAndNumberOfWords() {
-		
-		//if date is the same as the saved date then keep the same word
-	    //String outputString = "Hello world!";
-
-	    if(lastDate()==null){
-	    	//first time using app
-	    }else{
-	    	Calendar now = Calendar.getInstance();
-			SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
-					Locale.ENGLISH);
-			//check if the last date saved is the same as todays
-			if(dff.format(now.getTime()).contains(lastDate())){
-				//load the same word
-			}else{
-				//load different word.
-				//save the new date
-				saveDate(dff.format(now.getTime()));
-			}
-	    }
-	    
-	}
+//	private void saveDateAndNumberOfWords() {
+//		
+//		//if date is the same as the saved date then keep the same word
+//	    //String outputString = "Hello world!";
+//		Calendar now = Calendar.getInstance();
+//		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+//				Locale.ENGLISH);
+//		
+//	    if(lastDate()==null){
+//	    	//first time using app
+//	    	saveDate(dff.format(now.getTime()));
+//	    }else{
+//	    	
+//			//check if the last date saved is the same as todays
+//			if(dff.format(now.getTime()).contains(lastDate())){
+//				//load the same word
+//			}else{
+//				//load different word.
+//				//save the new date
+//				saveDate(dff.format(now.getTime()));
+//			}
+//	    }
+//	    
+//	}
 	
 private Boolean itsANewDay(){
+	Calendar now = Calendar.getInstance();
+	SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+			Locale.ENGLISH);
+	String theTime=dff.format(now.getTime());
 	if(lastDate()==null){
+		//first time opening app
+		saveDate(theTime);
     	return true;
     }else{
-    	Calendar now = Calendar.getInstance();
-		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
-				Locale.ENGLISH);
+
+
 		//check if the last date saved is the same as todays
-		if(dff.format(now.getTime()).contains(lastDate())){
+		if(theTime.contains(lastDate())){
 			return false;
 		}else{
 			//load different word.
