@@ -18,7 +18,7 @@ public class CurrentWord {
 	public static Word theCurrentWord;
 	public static List<Word> allWords;
 	public static List<ReviewWord> alreadySeen;
-	public static List<String> alreadySeenStrings;
+	public static List<String> alreadySeenStrings,shouldBeReviewedNow;
 	public static String weatherString;
 	public static HashMap<String, Integer> getImage;
 	public static String currentColor;

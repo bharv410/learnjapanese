@@ -5,9 +5,12 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
@@ -59,7 +62,8 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);
+		setContentView(R.layout.activity_main);		
+		
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -76,6 +80,7 @@ public class MainActivity extends FragmentActivity implements
 			@Override
 			public void onPageScrolled(int i, float v, int i2) {
 			}
+
 			@Override
 			public void onPageSelected(int i) {
 				if (i == 1) {
@@ -87,6 +92,7 @@ public class MainActivity extends FragmentActivity implements
 				}
 				titleIndicator.setCurrentItem(i);
 			}
+
 			@Override
 			public void onPageScrollStateChanged(int i) {
 
@@ -104,39 +110,12 @@ public class MainActivity extends FragmentActivity implements
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
 
-		
 		setupDatabases();
-			
-			showCorrectWord();
-			
-			//saves the word that was just set as current
-			
+		setWordsThatShouldBeReviewed();
+		showCorrectWord();
+
+
 		
-//		// get seen words. dont have to be reviewed tho
-//		for (ReviewWord r : dh.getReviewWords(false)) {
-//			// System.out.println("BEFOREUPDATE: "+r.getEnglish()+" "+r.getReview());
-//			// dh.setAsSeen(r.getEnglish());
-//			//
-//			String string = r.getTimeStamp();
-//			Date date;
-//			try {
-//				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-//						Locale.ENGLISH).parse(string);
-//				Calendar now = Calendar.getInstance();
-//				SimpleDateFormat dff = new SimpleDateFormat(
-//						"yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-//				// if the date is 9 days in the past then simply
-//				// increment the number
-//				// if they indeed review it then we must set it back to 0
-//
-//			} catch (ParseException e) {
-//			}
-//
-//		}
-//		for (ReviewWord ro : dh.getReviewWords(true)) {
-//			System.out.println("highlighted: " + ro.getEnglish() + " "
-//					+ ro.getReview() + ro.getTimeStamp());
-//		}
 
 		initLocation();
 		// get location for waether info
@@ -181,57 +160,119 @@ public class MainActivity extends FragmentActivity implements
 		}
 
 	}
-	private void setupDatabases(){
+
+	private void setupDatabases() {
 		try {
-		CurrentWord.allWords = new ArrayList<Word>();
-		CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
-		CurrentWord.alreadySeenStrings = new ArrayList<String>();
-		dynamicdb = new LocalDBHelper(MainActivity.this);
-		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
+			//init static objects
+			CurrentWord.allWords = new ArrayList<Word>();
+			CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
+			CurrentWord.alreadySeenStrings = new ArrayList<String>();
+			
+			//init databases
+			dynamicdb = new LocalDBHelper(MainActivity.this);
+			SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
+			//open db
 			dbhelper.CopyDataBaseFromAsset();
 			dbhelper.openDataBase();
 			for (ReviewWord r : dynamicdb.getReviewWords(false)) {
 				CurrentWord.alreadySeenStrings.add(r.getEnglish());
 			}
-			//grabs all words that were ever seen and adds to CurrnetWord.alreadySeen
-			CurrentWord.alreadySeen=dynamicdb.getReviewWords(false);
-			//grabs all words from the given DB and adds to CurrentWord.allWords
-			CurrentWord.allWords = dbhelper.getAllWords();
-			
+			// grabs all words that were ever seen and adds to
+			// CurrnetWord.alreadySeen
+			CurrentWord.alreadySeen = dynamicdb.getReviewWords(false);
+			// grabs all words from the given DB and adds to
+			// CurrentWord.allWords
+			// CurrentWord.allWords = dbhelper.getAllWords();
+			List<Word> firstSeven = dbhelper.getAllWords();
+			System.out.println("firstSeven size " + firstSeven.size());
+			int startFromLast = firstSeven.size() - 1;
+			System.out.println("startFromLast " + startFromLast);
+			int stopHere = startFromLast - 6 - CurrentWord.alreadySeen.size();
+			System.out.println("stopHere" + stopHere);
+			for (int i = startFromLast; i > stopHere; i--) {
+				CurrentWord.allWords.add(firstSeven.get(i));
+			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
-			}
-		}
-	
-private void showCorrectWord(){
-	for (Word w : CurrentWord.allWords) {
-		
-		// if no word has been chosen. and current word isnt in review list. then we found the word that should be shown next
-		if (!currentWordIsSet
-				&& (!CurrentWord.alreadySeenStrings.contains(w
-						.getEnglish()))) {
-
-
-			//if no word has been chosen and its a new day. then show new word and save to db
-			if (CurrentWord.theCurrentWord == null&&itsANewDay()){
-				CurrentWord.theCurrentWord = w;
-				dynamicdb.addWord(CurrentWord.theCurrentWord);
-				
-			}else if(CurrentWord.theCurrentWord == null&&(!itsANewDay())){
-				//no word was chosen. but its the same day
-
-					for(Word wrd:CurrentWord.allWords){
-						//show the same word as earlier that day
-						if(wrd.getEnglish().contains(CurrentWord.alreadySeen.get(CurrentWord.alreadySeen.size()-1).getEnglish())){
-							CurrentWord.theCurrentWord=wrd;
-						
-					}
-				}
-			}
-			currentWordIsSet = true;
 		}
 	}
+private void setWordsThatShouldBeReviewed(){
+	CurrentWord.shouldBeReviewedNow=new ArrayList<String>();
+	
+			 for (ReviewWord r : CurrentWord.alreadySeen) {
+
+			 String string = r.getTimeStamp();
+			 Calendar now = Calendar.getInstance();
+			 SimpleDateFormat dff = new SimpleDateFormat(
+			 "yyyy-MM-dd", Locale.ENGLISH);
+			 // if the date is 9 days in the past then simply
+			 // increment the number
+			 // if they indeed review it then we must set it back to 0
+			 String theTime = dff.format(now.getTime());
+			
+			 System.out.println(r.getEnglish() +" time is "+string);
+			 System.out.println(theTime);
+		
+				 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				   
+				    try {
+				        Date wordTimeStamp = dateFormat.parse(string);
+				        System.out.println(wordTimeStamp);
+				        System.out.println(wordTimeStamp);
+
+				        Calendar calendar = Calendar.getInstance();
+				        calendar.add(Calendar.DATE, -9);	
+				        
+				        Date nineDaysPrior = calendar.getTime();
+				        
+				        System.out.println(nineDaysPrior);
+				        System.out.println(nineDaysPrior);
+				        if(wordTimeStamp.before(nineDaysPrior)){
+				        	System.out.println("WORD SHOULD BE BOLD IN REVIEW SECTION");
+				        	CurrentWord.shouldBeReviewedNow.add(r.getEnglish());
+				        }else{
+				        	System.out.println("WORD SHOULD BE regular IN REVIEW SECTION");
+				        }
+				    } catch (ParseException e) {
+				        e.printStackTrace();
+				    }
+			 
+			 }
 }
+	private void showCorrectWord() {
+		for (Word w : CurrentWord.allWords) {
+
+			// if no word has been chosen. and w isnt in review list.
+			// then we found the word that should be shown next
+			if (!currentWordIsSet
+					&& (!CurrentWord.alreadySeenStrings
+							.contains(w.getEnglish()))) {
+
+				// if no word has been chosen and its a new day. then show new
+				// word and save to db
+				if (CurrentWord.theCurrentWord == null && itsANewDay()) {
+					CurrentWord.theCurrentWord = w;
+					dynamicdb.addWord(CurrentWord.theCurrentWord);
+
+				} else if (CurrentWord.theCurrentWord == null
+						&& (!itsANewDay())) {
+					// no word was chosen. but its the same day
+
+					for (Word wrd : CurrentWord.allWords) {
+						// show the same word as earlier that day
+						if (wrd.getEnglish().contains(
+								CurrentWord.alreadySeen.get(
+										CurrentWord.alreadySeen.size() - 1)
+										.getEnglish())) {
+							CurrentWord.theCurrentWord = wrd;
+						}
+					}
+				}
+				currentWordIsSet = true;
+			}
+		}
+	}
+
 	public void speakOut(View v) {
 		// speak the japanese text
 		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
@@ -240,7 +281,6 @@ private void showCorrectWord(){
 
 	private void speakOut(String text) {
 		tts.speak(text, TextToSpeech.QUEUE_FLUSH, null);
-
 	}
 
 	public void speakOutPhrase(View v) {
@@ -467,81 +507,88 @@ private void showCorrectWord(){
 		}
 	}
 
-//	private void saveDateAndNumberOfWords() {
-//		
-//		//if date is the same as the saved date then keep the same word
-//	    //String outputString = "Hello world!";
-//		Calendar now = Calendar.getInstance();
-//		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
-//				Locale.ENGLISH);
-//		
-//	    if(lastDate()==null){
-//	    	//first time using app
-//	    	saveDate(dff.format(now.getTime()));
-//	    }else{
-//	    	
-//			//check if the last date saved is the same as todays
-//			if(dff.format(now.getTime()).contains(lastDate())){
-//				//load the same word
-//			}else{
-//				//load different word.
-//				//save the new date
-//				saveDate(dff.format(now.getTime()));
-//			}
-//	    }
-//	    
-//	}
-	
-private Boolean itsANewDay(){
-	Calendar now = Calendar.getInstance();
-	SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
-			Locale.ENGLISH);
-	String theTime=dff.format(now.getTime());
-	if(lastDate()==null){
-		//first time opening app
-		saveDate(theTime);
-    	return true;
-    }else{
+	// private void saveDateAndNumberOfWords() {
+	//
+	// //if date is the same as the saved date then keep the same word
+	// //String outputString = "Hello world!";
+	// Calendar now = Calendar.getInstance();
+	// SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+	// Locale.ENGLISH);
+	//
+	// if(lastDate()==null){
+	// //first time using app
+	// saveDate(dff.format(now.getTime()));
+	// }else{
+	//
+	// //check if the last date saved is the same as todays
+	// if(dff.format(now.getTime()).contains(lastDate())){
+	// //load the same word
+	// }else{
+	// //load different word.
+	// //save the new date
+	// saveDate(dff.format(now.getTime()));
+	// }
+	// }
+	//
+	// }
 
-
-		//check if the last date saved is the same as todays
-		if(theTime.contains(lastDate())){
-			return false;
-		}else{
-			//load different word.
-			//save the new date
-			saveDate(dff.format(now.getTime()));
+	private Boolean itsANewDay() {
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+				Locale.ENGLISH);
+		String theTime = dff.format(now.getTime());
+		if (lastDate() == null) {
+			// first time opening app
+			saveDate(theTime);
 			return true;
+		} else {
+
+			// check if the last date saved is the same as todays
+			if (theTime.contains(lastDate())) {
+				return false;
+			} else {
+				// load different word.
+				// save the new date
+				saveDate(dff.format(now.getTime()));
+				return true;
+			}
 		}
-    }
-}
-	private void saveDate(String date){
-		
+	}
+
+	private void saveDate(String date) {
 		try {
-	        FileOutputStream outputStream = openFileOutput("date.txt", Context.MODE_PRIVATE);
-	        outputStream.write(date.getBytes());
-	        outputStream.close();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	    }
+			FileOutputStream outputStream = openFileOutput("date.txt",
+					Context.MODE_PRIVATE);
+			outputStream.write(date.getBytes());
+			outputStream.close();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	}
-	private String lastDate(){
+
+	private String lastDate() {
 		try {
-	        FileInputStream inputStream = openFileInput("date.txt");
-	        BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
-	        StringBuilder total = new StringBuilder();
-	        String line;
-	        while ((line = r.readLine()) != null) {
-	            total.append(line);
-	        }
-	        r.close();
-	        inputStream.close();
-	        Log.d("File", "File contents: " + total);
-	        return total.toString();
-	    } catch (Exception e) {
-	        e.printStackTrace();
-	        return null;
-	    }
+			FileInputStream inputStream = openFileInput("date.txt");
+			BufferedReader r = new BufferedReader(new InputStreamReader(
+					inputStream));
+			StringBuilder total = new StringBuilder();
+			String line;
+			while ((line = r.readLine()) != null) {
+				total.append(line);
+			}
+			r.close();
+			inputStream.close();
+			Log.d("File", "File contents: " + total);
+			return total.toString();
+		} catch (Exception e) {
+			Calendar now = Calendar.getInstance();
+			SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+					Locale.ENGLISH);
+			String theTime = dff.format(now.getTime());
+			saveDate(theTime);
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

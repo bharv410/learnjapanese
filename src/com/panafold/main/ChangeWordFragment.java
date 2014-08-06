@@ -9,6 +9,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.panafold.R;
+import com.panafold.main.datamodel.LocalDBHelper;
 import com.panafold.main.datamodel.Word;
 
 public class ChangeWordFragment extends ListFragment {
@@ -83,6 +85,11 @@ public class ChangeWordFragment extends ListFragment {
 		for (Word w : CurrentWord.allWords) {
 			if (w.getEnglish().contains(text)) {
 				CurrentWord.theCurrentWord = w;
+				//set current word. and update timestamp
+				LocalDBHelper dynamicdb = new LocalDBHelper(getActivity());
+				dynamicdb.getWritableDatabase();
+				dynamicdb.addWord(w);
+				
 			}
 		}
 		
@@ -115,6 +122,15 @@ public class ChangeWordFragment extends ListFragment {
 	            TextView itemView = (TextView) view.findViewById(R.id.wordtext);
 	            if (itemView != null) {
 	                // do whatever you want with your string and long
+	            	
+	            	if(CurrentWord.shouldBeReviewedNow.contains(item)){
+	            		itemView.setTypeface(itemView.getTypeface(), Typeface.ITALIC);
+	            		System.out.println(item);
+	            		System.out.println(item);
+	            		System.out.println(item);
+	            	}
+	            	
+	            	
 	                itemView.setText(item);
 	            }
 	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
