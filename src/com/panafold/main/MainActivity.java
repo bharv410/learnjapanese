@@ -1,6 +1,10 @@
 package com.panafold.main;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -12,6 +16,7 @@ import java.util.Locale;
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -31,7 +36,7 @@ import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
 import com.panafold.R;
 import com.panafold.adapter.TabsPagerAdapter;
-import com.panafold.main.datamodel.DatabaseHandler;
+import com.panafold.main.datamodel.LocalDBHelper;
 import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.SqlLiteDbHelper;
 import com.panafold.main.datamodel.Word;
@@ -48,7 +53,7 @@ public class MainActivity extends FragmentActivity implements
 	private ImageView mIvWeather0;
 	private BestLocationProvider mBestLocationProvider;
 	private BestLocationListener mBestLocationListener;
-	DatabaseHandler dh;
+	LocalDBHelper dh;
 	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
 	private ProgressBar weatherPB;
 	private Boolean currentWordIsSet;
@@ -58,15 +63,27 @@ public class MainActivity extends FragmentActivity implements
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-
+		
+		
+		Calendar now = Calendar.getInstance();
+		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+				Locale.ENGLISH);
+			saveDate(dff.format(now.getTime()));
+		
+		
+		
+		
+		
+		
+		
+		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
 		viewPager.setCurrentItem(1);
-
 		CurrentWord.initHashMap();
 		CurrentWord.initStrings();
-		currentWordIsSet=false;
+		currentWordIsSet = false;
 		// Bind the title indicator to the adapter
 		final LinePageIndicator titleIndicator = (LinePageIndicator) findViewById(R.id.indicator);
 		titleIndicator.setViewPager(viewPager);
@@ -86,7 +103,6 @@ public class MainActivity extends FragmentActivity implements
 				}
 				titleIndicator.setCurrentItem(i);
 			}
-
 			@Override
 			public void onPageScrollStateChanged(int i) {
 
@@ -106,72 +122,84 @@ public class MainActivity extends FragmentActivity implements
 
 		CurrentWord.allWords = new ArrayList<Word>();
 
-		dh = new DatabaseHandler(MainActivity.this);
+		dh = new LocalDBHelper(MainActivity.this);
 		SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
 		try {
-			dbhelper.CopyDataBaseFromAsset();
-			dbhelper.openDataBase();
-			List<Word> allWords = dbhelper.getAllWords();
-			CurrentWord.alreadySeen= new ArrayList<ReviewWord>();
-			CurrentWord.alreadySeenStrings= new ArrayList<String>();
+			//grabs all SAVED words and adds to CurrnetWord.alreadySeen
+			CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
+			CurrentWord.alreadySeenStrings = new ArrayList<String>();
 			for (ReviewWord r : dh.getReviewWords(false)) {
 				CurrentWord.alreadySeen.add(r);
 				CurrentWord.alreadySeenStrings.add(r.getEnglish());
 			}
 			
+			dbhelper.CopyDataBaseFromAsset();
+			dbhelper.openDataBase();
+			List<Word> allWords = dbhelper.getAllWords();
+			//grabs all words no matter what
 			for (Word w : allWords) {
-				//add all words no matter what
 				CurrentWord.allWords.add(w);
-				//find first word that isnt in review. 
-				if(!currentWordIsSet&&(!CurrentWord.alreadySeenStrings.contains(w.getEnglish()))){
-					//check if its already chosen(like if user chose from review menu)
-					if(CurrentWord.theCurrentWord==null)
-					CurrentWord.theCurrentWord=w;
-					currentWordIsSet=true;
-
+				// find first word that isnt in review.
+				if (!currentWordIsSet
+						&& (!CurrentWord.alreadySeenStrings.contains(w
+								.getEnglish()))) {
+					// check if its already chosen(like if user chose from
+					// review menu)
+					if (CurrentWord.theCurrentWord == null&&itsANewDay()){
+						//save new word to db and set it for the main page
+						CurrentWord.theCurrentWord = w;
+						dh.addWord(CurrentWord.theCurrentWord);
+					}else{
+						//word was chosen. or its the same day
+						
+						//so if word wasnt chosen.set word to last reviewed word
+						if (CurrentWord.theCurrentWord== null){
+							for(Word wrd:allWords){
+								if(wrd.getEnglish().contains(CurrentWord.alreadySeen.get(CurrentWord.alreadySeen.size()-1).getEnglish())){
+									CurrentWord.theCurrentWord=wrd;
+								}
+							}
+						}
+					}
+					currentWordIsSet = true;
 				}
 			}
-			dh.addWord(CurrentWord.theCurrentWord);
+			//saves the word that was just set as current
+			
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		// get seen words. dont have to be reviewed tho
-		for (ReviewWord r : dh.getReviewWords(false)) {
-			// System.out.println("BEFOREUPDATE: "+r.getEnglish()+" "+r.getReview());
-			// dh.setAsSeen(r.getEnglish());
-			//
-			System.out.println("nothighlighted: " + r.getEnglish() + " "
-					+ r.getReview());
-
-			String string = r.getTimeStamp();
-			Date date;
-			try {
-				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
-						Locale.ENGLISH).parse(string);
-				System.out.println(string + "\n" + date);
-				System.out.println(string + "\n" + date);
-				Calendar now = Calendar.getInstance();
-				SimpleDateFormat dff = new SimpleDateFormat(
-						"yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
-				System.out.println("now: " + dff.format(now.getTime()));
-				System.out.println("now: " + dff.format(now.getTime()));
-				// if the date is 9 days in the past then simply
-				// increment the number
-				// if they indeed review it then we must set it back to 0
-
-			} catch (ParseException e) {
-			}
-
-		}
-		for (ReviewWord ro : dh.getReviewWords(true)) {
-			System.out.println("highlighted: " + ro.getEnglish() + " "
-					+ ro.getReview() + ro.getTimeStamp());
-		}
+//		// get seen words. dont have to be reviewed tho
+//		for (ReviewWord r : dh.getReviewWords(false)) {
+//			// System.out.println("BEFOREUPDATE: "+r.getEnglish()+" "+r.getReview());
+//			// dh.setAsSeen(r.getEnglish());
+//			//
+//			String string = r.getTimeStamp();
+//			Date date;
+//			try {
+//				date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",
+//						Locale.ENGLISH).parse(string);
+//				Calendar now = Calendar.getInstance();
+//				SimpleDateFormat dff = new SimpleDateFormat(
+//						"yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
+//				// if the date is 9 days in the past then simply
+//				// increment the number
+//				// if they indeed review it then we must set it back to 0
+//
+//			} catch (ParseException e) {
+//			}
+//
+//		}
+//		for (ReviewWord ro : dh.getReviewWords(true)) {
+//			System.out.println("highlighted: " + ro.getEnglish() + " "
+//					+ ro.getReview() + ro.getTimeStamp());
+//		}
 
 		initLocation();
 		// get location for waether info
 		mBestLocationProvider
 				.startLocationUpdatesWithListener(mBestLocationListener);
+
 	}
 
 	@Override
@@ -273,8 +301,6 @@ public class MainActivity extends FragmentActivity implements
 			// turn off location updates because they are no longer needed.
 			mBestLocationProvider.stopLocationUpdates();
 
-			
-
 			setWeatherIcon(weatherInfo.getCurrentCode());
 
 			// exception thrown when user exits app but weather info is updated
@@ -282,7 +308,7 @@ public class MainActivity extends FragmentActivity implements
 				// start weather progressbar to indicate loading
 				weatherPB = (ProgressBar) findViewById(R.id.weatherProgressBar);
 				weatherPB.setVisibility(ProgressBar.GONE);
-				
+
 				TextView weatherTextView = (TextView) findViewById(R.id.weatherTextView);
 				weatherTextView.setTypeface(gothamFont);
 				CurrentWord.weatherString = weatherInfo.getCurrentTempF()
@@ -446,5 +472,76 @@ public class MainActivity extends FragmentActivity implements
 			mIvWeather0.setImageResource(R.drawable.sunny);
 			break;
 		}
+	}
+
+	private void saveDateAndNumberOfWords() {
+		
+		//if date is the same as the saved date then keep the same word
+	    //String outputString = "Hello world!";
+
+	    if(lastDate()==null){
+	    	//first time using app
+	    }else{
+	    	Calendar now = Calendar.getInstance();
+			SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+					Locale.ENGLISH);
+			//check if the last date saved is the same as todays
+			if(dff.format(now.getTime()).contains(lastDate())){
+				//load the same word
+			}else{
+				//load different word.
+				//save the new date
+				saveDate(dff.format(now.getTime()));
+			}
+	    }
+	    
+	}
+	
+private Boolean itsANewDay(){
+	if(lastDate()==null){
+    	return true;
+    }else{
+    	Calendar now = Calendar.getInstance();
+		SimpleDateFormat dff = new SimpleDateFormat("yyyy-MM-dd",
+				Locale.ENGLISH);
+		//check if the last date saved is the same as todays
+		if(dff.format(now.getTime()).contains(lastDate())){
+			return false;
+		}else{
+			//load different word.
+			//save the new date
+			saveDate(dff.format(now.getTime()));
+			return true;
+		}
+    }
+}
+	private void saveDate(String date){
+		
+		try {
+	        FileOutputStream outputStream = openFileOutput("date.txt", Context.MODE_PRIVATE);
+	        outputStream.write(date.getBytes());
+	        outputStream.close();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	    }
+
+	}
+	private String lastDate(){
+		try {
+	        FileInputStream inputStream = openFileInput("date.txt");
+	        BufferedReader r = new BufferedReader(new InputStreamReader(inputStream));
+	        StringBuilder total = new StringBuilder();
+	        String line;
+	        while ((line = r.readLine()) != null) {
+	            total.append(line);
+	        }
+	        r.close();
+	        inputStream.close();
+	        Log.d("File", "File contents: " + total);
+	        return total.toString();
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return null;
+	    }
 	}
 }
