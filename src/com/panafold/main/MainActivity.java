@@ -10,13 +10,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -34,7 +34,10 @@ import at.theengine.android.bestlocation.BestLocationListener;
 import at.theengine.android.bestlocation.BestLocationProvider;
 import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
+import com.panafold.AboutPageActivity;
+import com.panafold.InAppPurchaseActivity;
 import com.panafold.R;
+import com.panafold.TutorialActivity;
 import com.panafold.adapter.TabsPagerAdapter;
 import com.panafold.main.datamodel.LocalDBHelper;
 import com.panafold.main.datamodel.ReviewWord;
@@ -62,8 +65,7 @@ public class MainActivity extends FragmentActivity implements
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);		
-		
+		setContentView(R.layout.activity_main);						
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -164,8 +166,9 @@ public class MainActivity extends FragmentActivity implements
 	private void setupDatabases() {
 		try {
 			//init static objects
+			CurrentWord.lastSevenWords = new ArrayList<Word>();
 			CurrentWord.allWords = new ArrayList<Word>();
-			CurrentWord.alreadySeen = new ArrayList<ReviewWord>();
+			CurrentWord.previouslySavedWords = new ArrayList<ReviewWord>();
 			CurrentWord.alreadySeenStrings = new ArrayList<String>();
 			
 			//init databases
@@ -176,21 +179,23 @@ public class MainActivity extends FragmentActivity implements
 			dbhelper.openDataBase();
 			for (ReviewWord r : dynamicdb.getReviewWords(false)) {
 				CurrentWord.alreadySeenStrings.add(r.getEnglish());
+System.out.println("previouslySaved Wrods: " +r.getEnglish());
 			}
 			// grabs all words that were ever seen and adds to
 			// CurrnetWord.alreadySeen
-			CurrentWord.alreadySeen = dynamicdb.getReviewWords(false);
+			CurrentWord.previouslySavedWords = dynamicdb.getReviewWords(false);
 			// grabs all words from the given DB and adds to
 			// CurrentWord.allWords
 			// CurrentWord.allWords = dbhelper.getAllWords();
-			List<Word> firstSeven = dbhelper.getAllWords();
-			System.out.println("firstSeven size " + firstSeven.size());
-			int startFromLast = firstSeven.size() - 1;
-			System.out.println("startFromLast " + startFromLast);
-			int stopHere = startFromLast - 6 - CurrentWord.alreadySeen.size();
-			System.out.println("stopHere" + stopHere);
+			CurrentWord.allWords = dbhelper.getAllWords();
+			for(Word k:CurrentWord.allWords){
+				System.out.println("all words "+k.getEnglish());
+			}
+			int startFromLast = CurrentWord.allWords.size() - 1;
+			int stopHere = startFromLast - 7;
 			for (int i = startFromLast; i > stopHere; i--) {
-				CurrentWord.allWords.add(firstSeven.get(i));
+				CurrentWord.lastSevenWords.add(CurrentWord.allWords.get(i));
+				System.out.println("CurrentWord.lastSevenWords "+CurrentWord.allWords.get(i).getEnglish());
 			}
 		} catch (IOException e1) {
 			e1.printStackTrace();
@@ -199,7 +204,7 @@ public class MainActivity extends FragmentActivity implements
 private void setWordsThatShouldBeReviewed(){
 	CurrentWord.shouldBeReviewedNow=new ArrayList<String>();
 	
-			 for (ReviewWord r : CurrentWord.alreadySeen) {
+			 for (ReviewWord r : CurrentWord.previouslySavedWords) {
 
 			 String string = r.getTimeStamp();
 			 Calendar now = Calendar.getInstance();
@@ -210,8 +215,7 @@ private void setWordsThatShouldBeReviewed(){
 			 // if they indeed review it then we must set it back to 0
 			 String theTime = dff.format(now.getTime());
 			
-			 System.out.println(r.getEnglish() +" time is "+string);
-			 System.out.println(theTime);
+			
 		
 				 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				   
@@ -228,7 +232,7 @@ private void setWordsThatShouldBeReviewed(){
 				        System.out.println(nineDaysPrior);
 				        System.out.println(nineDaysPrior);
 				        if(wordTimeStamp.before(nineDaysPrior)){
-				        	System.out.println("WORD SHOULD BE BOLD IN REVIEW SECTION");
+				        	System.out.println(r.getEnglish() + "WORD SHOULD BE BOLD IN REVIEW SECTION");
 				        	CurrentWord.shouldBeReviewedNow.add(r.getEnglish());
 				        }else{
 				        	System.out.println("WORD SHOULD BE regular IN REVIEW SECTION");
@@ -261,8 +265,8 @@ private void setWordsThatShouldBeReviewed(){
 					for (Word wrd : CurrentWord.allWords) {
 						// show the same word as earlier that day
 						if (wrd.getEnglish().contains(
-								CurrentWord.alreadySeen.get(
-										CurrentWord.alreadySeen.size() - 1)
+								CurrentWord.previouslySavedWords.get(
+										CurrentWord.previouslySavedWords.size() - 1)
 										.getEnglish())) {
 							CurrentWord.theCurrentWord = wrd;
 						}
@@ -590,5 +594,15 @@ private void setWordsThatShouldBeReviewed(){
 			e.printStackTrace();
 			return null;
 		}
+	}
+	
+	public void goToTutorialPage(View v){
+		startActivity(new Intent(this,TutorialActivity.class));
+	}
+	public void aboutPage(View v){
+		startActivity(new Intent(MainActivity.this,AboutPageActivity.class));
+	}
+	public void getMoreWords(View v){
+		startActivity(new Intent(MainActivity.this,InAppPurchaseActivity.class));
 	}
 }

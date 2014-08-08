@@ -90,7 +90,10 @@ public class LocalDBHelper extends SQLiteOpenHelper {
 
     db.update(TABLE_WORDS, args, KEY_ENGLISH+"="+sameEnglish, null);
 }
-    
+    public boolean deleteTitle(String name) 
+	{SQLiteDatabase db = this.getWritableDatabase();
+	    return db.delete(TABLE_WORDS, KEY_ENGLISH + "=" + name, null) > 0;
+	}
     // Getting All Contacts
     public List<ReviewWord> getReviewWords(Boolean putInReviewSection) {
         List<ReviewWord> wordList = new ArrayList<ReviewWord>();

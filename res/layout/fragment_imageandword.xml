@@ -8,13 +8,12 @@
     android:soundEffectsEnabled="true" >
 
     <RelativeLayout
-        android:id="@+id/relativeLayout2"
+        android:id="@+id/beigeBlock"
         android:layout_width="wrap_content"
         android:layout_height="200dp"
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentRight="true"
-        android:background="#F8EFCB"
         android:soundEffectsEnabled="true" >
 
         <TextView
@@ -24,31 +23,12 @@
             android:layout_below="@+id/romajiOrHiriganaTextView"
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
+            android:gravity="center"
             android:text="japanese word"
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6D6E70"
             android:textSize="40dp"
-            android:gravity="center"
             android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/lineImageView"
-            android:layout_width="wrap_content"
-            android:layout_height="120dp"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="32dp"
-            android:layout_centerHorizontal="true"
-            android:src="@drawable/line" />
-
-        <TextView
-            android:id="@+id/weatherTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/lineImageView"
-            android:layout_alignLeft="@+id/imageView2"
-            android:layout_marginLeft="19dp"
-            android:textColor="#6D6E70"
-            android:textSize="24sp" />
 
         <ProgressBar
             android:id="@+id/weatherProgressBar"
@@ -57,16 +37,6 @@
             android:layout_alignTop="@+id/weatherTextView"
             android:layout_toRightOf="@+id/weatherTextView"
             android:visibility="invisible" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_alignLeft="@+id/lineImageView"
-            android:layout_alignParentRight="true"
-            android:layout_alignTop="@+id/lineImageView"
-            android:layout_marginTop="20dp"
-            android:src="@drawable/cloudy" />
 
         <TextView
             android:id="@+id/romajiOrHiriganaTextView"
@@ -91,6 +61,24 @@
             android:text="Date"
             android:textColor="#6D6E70"
             android:textSize="36sp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_alignBottom="@+id/dateTextView"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/cloudy" />
+
+        <TextView
+            android:id="@+id/weatherTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@+id/imageView2"
+            android:layout_below="@+id/imageView2"
+            android:layout_marginLeft="17dp"
+            android:textColor="#6D6E70"
+            android:textSize="24sp" />
 
     </RelativeLayout>
 
@@ -140,10 +128,10 @@
         android:id="@+id/button1"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_above="@+id/relativeLayout2"
+        android:layout_below="@+id/blankTextView"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="14dp"
         android:background="@drawable/soundicon"
-        android:onClick="speakOut"
-        android:layout_marginBottom="15dp" />
+        android:onClick="speakOut" />
 
 </RelativeLayout>

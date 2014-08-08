@@ -23,7 +23,6 @@
        android:layout_alignTop="@+id/list_image"
        android:layout_toRightOf="@+id/list_image"
        android:ellipsize="marquee"
-       android:singleLine="true"
-       android:textStyle="bold" />
+       android:singleLine="true" />
 
 </RelativeLayout>

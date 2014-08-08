@@ -149,8 +149,8 @@ public class CurrentWordFragment extends Fragment {
     		    	dateView.setVisibility(View.INVISIBLE);
     		    	TextView weatherTextView =(TextView)getActivity().findViewById(R.id.weatherTextView);
     		    	weatherTextView.setVisibility(View.INVISIBLE);
-    		    	ImageView lineImageView =(ImageView)getActivity().findViewById(R.id.lineImageView);
-    		    	lineImageView.setVisibility(View.INVISIBLE);
+    		    	RelativeLayout beigeBlock =(RelativeLayout)getActivity().findViewById(R.id.beigeBlock);
+    		    	beigeBlock.setBackgroundColor(Color.parseColor("#F8EFCB"));
     		    	ImageView cloudIconImageView =(ImageView)getActivity().findViewById(R.id.imageView2);
     		    	cloudIconImageView.setVisibility(View.INVISIBLE);
     	    		MainActivity.shown++;
@@ -168,8 +168,8 @@ public class CurrentWordFragment extends Fragment {
     		    	dateView.setVisibility(View.VISIBLE);
     		    	TextView weatherTextView =(TextView)getActivity().findViewById(R.id.weatherTextView);
     		    	weatherTextView.setVisibility(View.VISIBLE);
-    		    	ImageView lineImageView =(ImageView)getActivity().findViewById(R.id.lineImageView);
-    		    	lineImageView.setVisibility(View.VISIBLE);
+    		    	RelativeLayout beigeBlock =(RelativeLayout)getActivity().findViewById(R.id.beigeBlock);
+    		    	beigeBlock.setBackgroundColor(Color.TRANSPARENT);
     		    	ImageView cloudIconImageView =(ImageView)getActivity().findViewById(R.id.imageView2);
     		    	cloudIconImageView.setVisibility(View.VISIBLE);
     	    		MainActivity.shown++;

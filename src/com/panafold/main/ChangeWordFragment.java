@@ -28,6 +28,7 @@ import android.widget.TextView;
 
 import com.panafold.R;
 import com.panafold.main.datamodel.LocalDBHelper;
+import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.Word;
 
 public class ChangeWordFragment extends ListFragment {
@@ -40,7 +41,10 @@ public class ChangeWordFragment extends ListFragment {
 			Bundle savedInstanceState) {
 		
 		wordsForAdapter= new ArrayList<String>();
-		for(Word w:CurrentWord.allWords){
+		for(ReviewWord rw: CurrentWord.previouslySavedWords){
+			wordsForAdapter.add(rw.getEnglish());
+		}
+		for(Word w:CurrentWord.lastSevenWords){
 			wordsForAdapter.add(w.getEnglish());
 		}
 		
@@ -88,6 +92,11 @@ public class ChangeWordFragment extends ListFragment {
 				//set current word. and update timestamp
 				LocalDBHelper dynamicdb = new LocalDBHelper(getActivity());
 				dynamicdb.getWritableDatabase();
+				try{
+					dynamicdb.deleteTitle(text);
+				}catch(Exception e){
+					
+				}
 				dynamicdb.addWord(w);
 				
 			}
@@ -124,7 +133,7 @@ public class ChangeWordFragment extends ListFragment {
 	                // do whatever you want with your string and long
 	            	
 	            	if(CurrentWord.shouldBeReviewedNow.contains(item)){
-	            		itemView.setTypeface(itemView.getTypeface(), Typeface.ITALIC);
+	            		itemView.setTypeface(itemView.getTypeface(), Typeface.BOLD);
 	            		System.out.println(item);
 	            		System.out.println(item);
 	            		System.out.println(item);

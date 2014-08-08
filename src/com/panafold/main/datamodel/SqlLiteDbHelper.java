@@ -123,6 +123,8 @@ public class SqlLiteDbHelper extends SQLiteOpenHelper {
 		in.close();
 
 	}
+	
+	
 
 	public void openDataBase() throws SQLException {
 		String path = DATABASE_PATH;

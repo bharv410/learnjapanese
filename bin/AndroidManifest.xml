@@ -13,9 +13,10 @@
     <uses-permission android:name="android.permisssion.ACCESS_COARSE_LOCATION" >
     </uses-permission>
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.android.vending.BILLING" />
 
     <uses-sdk
-        android:minSdkVersion="11"
+        android:minSdkVersion="13"
         android:targetSdkVersion="17" />
 
     <application
@@ -36,6 +37,21 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".TutorialActivity"
+            android:label="@string/title_activity_tutorial"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name=".AboutPageActivity"
+            android:label="@string/title_activity_about_page"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
+        </activity>
+        <activity
+            android:name=".InAppPurchaseActivity"
+            android:label="@string/title_activity_in_app_purchase"
+            android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
         </activity>
     </application>
 
