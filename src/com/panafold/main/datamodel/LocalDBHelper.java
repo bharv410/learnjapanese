@@ -92,10 +92,10 @@ public class LocalDBHelper extends SQLiteOpenHelper {
 }
     public boolean deleteTitle(String name) 
 	{SQLiteDatabase db = this.getWritableDatabase();
-	    return db.delete(TABLE_WORDS, KEY_ENGLISH + "=" + name, null) > 0;
+	    return db.delete(TABLE_WORDS, KEY_ENGLISH + "='" + name+"'", null) > 0;
 	}
     // Getting All Contacts
-    public List<ReviewWord> getReviewWords(Boolean putInReviewSection) {
+    public List<ReviewWord> getReviewWords() {
         List<ReviewWord> wordList = new ArrayList<ReviewWord>();
         // Select All Query
         String selectQuery = "SELECT  * FROM " + TABLE_WORDS;
@@ -107,16 +107,9 @@ public class LocalDBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
             	ReviewWord curWord = new ReviewWord(cursor.getString(0), cursor.getInt(1), cursor.getString(2));
-            	//if review column was updated to 1 then add to review list
-            	if(putInReviewSection){//if checking for review section words, then check if review column =1
-            		if(curWord.getReview()==1){
+            	System.out.println("Grabbing "+curWord.getEnglish() +" from db. timestamp is "+curWord.getTimeStamp());
                 		wordList.add(curWord);
-                	}
-            	}else{// if NOT checking for review section then check if review column =0
-            		if(curWord.getReview()==0){
-                		wordList.add(curWord);
-                	}
-            	}
+                
             	} while (cursor.moveToNext());
         }
         // return contact list

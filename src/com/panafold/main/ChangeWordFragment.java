@@ -36,21 +36,23 @@ public class ChangeWordFragment extends ListFragment {
 	EditText inputSearch;
 	WordAdapter adapter;
 	List<String> wordsForAdapter;
+
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		
-		wordsForAdapter= new ArrayList<String>();
-		for(ReviewWord rw: CurrentWord.previouslySavedWords){
+
+		wordsForAdapter = new ArrayList<String>();
+		for (ReviewWord rw : CurrentWord.previouslySavedWords) {
 			wordsForAdapter.add(rw.getEnglish());
 		}
-		for(Word w:CurrentWord.lastSevenWords){
+		for (Word w : CurrentWord.beginningReviewWords) {
 			wordsForAdapter.add(w.getEnglish());
 		}
-		
+
 		View rootView = inflater.inflate(R.layout.fragment_reviewwords,
 				container, false);
-		adapter = new WordAdapter(getActivity(),R.layout.list_item, wordsForAdapter);
+		adapter = new WordAdapter(getActivity(), R.layout.list_item,
+				wordsForAdapter);
 		setListAdapter(adapter);
 		return rootView;
 	}
@@ -82,92 +84,104 @@ public class ChangeWordFragment extends ListFragment {
 
 	@Override
 	public void onListItemClick(ListView l, View v, int position, long id) {
-		TextView tv=(TextView)v.findViewById(R.id.wordtext);
+		TextView tv = (TextView) v.findViewById(R.id.wordtext);
 		final String text = tv.getText().toString();
 
-
+		// set word to clicked word no matter what
 		for (Word w : CurrentWord.allWords) {
 			if (w.getEnglish().contains(text)) {
 				CurrentWord.theCurrentWord = w;
-				//set current word. and update timestamp
-				LocalDBHelper dynamicdb = new LocalDBHelper(getActivity());
-				dynamicdb.getWritableDatabase();
-				try{
-					dynamicdb.deleteTitle(text);
-				}catch(Exception e){
-					
-				}
-				dynamicdb.addWord(w);
-				
 			}
 		}
-		
+		// update timestamp if they clicked a previouslySavedWord
+		for (ReviewWord rw : CurrentWord.previouslySavedWords) {
+			if (rw.getEnglish().contains(text)) {
+				LocalDBHelper dynamicdb = new LocalDBHelper(getActivity());
+				dynamicdb.getWritableDatabase();
+				try {
+					System.out.println("Deleted? "
+							+ dynamicdb.deleteTitle(text));
+				} catch (Exception e) {
+
+				}
+				dynamicdb.addWord(new Word(rw.getEnglish(), text, text, text,
+						position, text, text, text, text, position, text));
+			}
+		}
+
 		// CurrentWord.currentEnglishWord=text;
 		Intent i = new Intent(getActivity(), MainActivity.class);
 		startActivity(i);
-
+		getActivity().finish();
 	}
-	
-	
-	public class WordAdapter extends ArrayAdapter<String> implements Filterable{
 
-	    private Context context;
+	public class WordAdapter extends ArrayAdapter<String> implements Filterable {
 
-	    public WordAdapter(Context context, int textViewResourceId, List<String> items) {
-	        super(context, textViewResourceId, items);
-	        this.context = context;
-	    }
+		private Context context;
 
-	    public View getView(int position, View convertView, ViewGroup parent) {
-	        View view = convertView;
-	        if (view == null) {
-	            LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-	            view = inflater.inflate(R.layout.list_item, null);
-	        }
+		public WordAdapter(Context context, int textViewResourceId,
+				List<String> items) {
+			super(context, textViewResourceId, items);
+			this.context = context;
+		}
 
-	        String item = getItem(position);
-	        if (item!= null) {
-	            // My layout has only one TextView
-	            TextView itemView = (TextView) view.findViewById(R.id.wordtext);
-	            if (itemView != null) {
-	                // do whatever you want with your string and long
-	            	
-	            	if(CurrentWord.shouldBeReviewedNow.contains(item)){
-	            		itemView.setTypeface(itemView.getTypeface(), Typeface.BOLD);
-	            		System.out.println(item);
-	            		System.out.println(item);
-	            		System.out.println(item);
-	            	}
-	            	
-	            	
-	                itemView.setText(item);
-	            }
-	            ImageView iv =(ImageView)view.findViewById(R.id.list_image);
-	            if(iv!=null){
-	            	
-	            	BitmapFactory.Options options = new BitmapFactory.Options();
-					options.inPurgeable = true; // inPurgeable is used to free up
+		public View getView(int position, View convertView, ViewGroup parent) {
+			View view = convertView;
+			if (view == null) {
+				LayoutInflater inflater = (LayoutInflater) context
+						.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+				view = inflater.inflate(R.layout.list_item, null);
+			}
+
+			String item = getItem(position);
+			if (item != null) {
+				// My layout has only one TextView
+				TextView itemView = (TextView) view.findViewById(R.id.wordtext);
+				if (itemView != null) {
+					// do whatever you want with your string and long
+
+					if (CurrentWord.shouldBeBold.contains(item)) {
+						itemView.setTypeface(itemView.getTypeface(),
+								Typeface.BOLD);
+						System.out.println("Should be bold :" + item);
+
+					} else {
+						itemView.setTypeface(null, Typeface.NORMAL);
+						System.out.println("Should be normal :" + item);
+					}
+
+					itemView.setText(item);
+				}
+				ImageView iv = (ImageView) view.findViewById(R.id.list_image);
+				if (iv != null) {
+
+					BitmapFactory.Options options = new BitmapFactory.Options();
+					options.inPurgeable = true; // inPurgeable is used to free
+												// up
 												// memory while required
-					Bitmap bm = drawableToBitmap(getResources().getDrawable(CurrentWord.getImage.get(item)));
-					Bitmap bm2 = Bitmap.createScaledBitmap(bm, bm.getWidth()/3,
-							bm.getHeight()/3, true);
-	            	
-	            	iv.setImageBitmap(bm2);
-	            }
-	         }
-	        return view;
-	    }
+					Bitmap bm = drawableToBitmap(getResources().getDrawable(
+							CurrentWord.getImage.get(item)));
+					Bitmap bm2 = Bitmap.createScaledBitmap(bm,
+							bm.getWidth() / 3, bm.getHeight() / 3, true);
+
+					iv.setImageBitmap(bm2);
+				}
+			}
+			return view;
+		}
 	}
-	public  Bitmap drawableToBitmap (Drawable drawable) {
-	    if (drawable instanceof BitmapDrawable) {
-	        return ((BitmapDrawable)drawable).getBitmap();
-	    }
 
-	    Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Config.ARGB_8888);
-	    Canvas canvas = new Canvas(bitmap); 
-	    drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-	    drawable.draw(canvas);
+	public Bitmap drawableToBitmap(Drawable drawable) {
+		if (drawable instanceof BitmapDrawable) {
+			return ((BitmapDrawable) drawable).getBitmap();
+		}
 
-	    return bitmap;
+		Bitmap bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(),
+				drawable.getIntrinsicHeight(), Config.ARGB_8888);
+		Canvas canvas = new Canvas(bitmap);
+		drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+		drawable.draw(canvas);
+
+		return bitmap;
 	}
 }

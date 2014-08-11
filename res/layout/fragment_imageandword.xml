@@ -128,9 +128,8 @@
         android:id="@+id/button1"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_below="@+id/blankTextView"
+        android:layout_above="@+id/beigeBlock"
         android:layout_centerHorizontal="true"
-        android:layout_marginTop="14dp"
         android:background="@drawable/soundicon"
         android:onClick="speakOut" />
 

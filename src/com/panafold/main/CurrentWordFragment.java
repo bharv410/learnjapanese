@@ -93,6 +93,7 @@ public class CurrentWordFragment extends Fragment {
         
       //set big pic image to the corresponding resource in the static hashmap
       		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
+      		System.out.println(CurrentWord.theCurrentWord.getEnglish());
       		bigPic.setImageDrawable(getResources().getDrawable(CurrentWord.getImage.get(CurrentWord.theCurrentWord.getEnglish())));
       		
         

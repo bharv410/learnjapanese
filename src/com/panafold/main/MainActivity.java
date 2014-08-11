@@ -15,7 +15,9 @@ import java.util.Locale;
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -30,10 +32,12 @@ import android.view.Window;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 import at.theengine.android.bestlocation.BestLocationListener;
 import at.theengine.android.bestlocation.BestLocationProvider;
 import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
+import com.anjlab.android.iab.v3.BillingProcessor;
 import com.panafold.AboutPageActivity;
 import com.panafold.InAppPurchaseActivity;
 import com.panafold.R;
@@ -46,7 +50,7 @@ import com.panafold.main.datamodel.Word;
 import com.viewpagerindicator.LinePageIndicator;
 
 public class MainActivity extends FragmentActivity implements
-		TextToSpeech.OnInitListener, YahooWeatherInfoListener {
+		TextToSpeech.OnInitListener, YahooWeatherInfoListener, BillingProcessor.IBillingHandler{
 	private TextToSpeech tts;
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
@@ -59,13 +63,17 @@ public class MainActivity extends FragmentActivity implements
 	LocalDBHelper dynamicdb;
 	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
 	private ProgressBar weatherPB;
-	private Boolean currentWordIsSet;
-
+	private Boolean currentWordIsSet,supportsTextToSpeech;
+	BillingProcessor bp;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		setContentView(R.layout.activity_main);						
+		setContentView(R.layout.activity_main);
+		supportsTextToSpeech=false;
+		
+		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
+		bp = new BillingProcessor(this, null, this);
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -103,7 +111,21 @@ public class MainActivity extends FragmentActivity implements
 
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
+		
+		setupFonts();
+		setupDatabases();
+		
+		setWordsThatShouldBeReviewed();
+		addSomeWords();
+		showCorrectWord();
+		initLocation();
+		// get location for waether info
+		mBestLocationProvider
+				.startLocationUpdatesWithListener(mBestLocationListener);
 
+	}
+
+	private void setupFonts() {
 		// add custom fonts
 		gothamFont = Typeface.createFromAsset(getAssets(),
 				"fonts/Gotham-Book.ttf");
@@ -111,19 +133,6 @@ public class MainActivity extends FragmentActivity implements
 				"fonts/NeutraText-Demi.otf");
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
-
-		setupDatabases();
-		setWordsThatShouldBeReviewed();
-		showCorrectWord();
-
-
-		
-
-		initLocation();
-		// get location for waether info
-		mBestLocationProvider
-				.startLocationUpdatesWithListener(mBestLocationListener);
-
 	}
 
 	@Override
@@ -140,12 +149,16 @@ public class MainActivity extends FragmentActivity implements
 			tts.stop();
 			tts.shutdown();
 		}
+		 if (bp != null) 
+	            bp.release();
 		super.onDestroy();
 	}
 
 	@Override
 	public void onInit(int status) {
 
+		
+		
 		if (status == TextToSpeech.SUCCESS) {
 
 			int result = tts.setLanguage(Locale.JAPANESE);
@@ -153,7 +166,10 @@ public class MainActivity extends FragmentActivity implements
 			if (result == TextToSpeech.LANG_MISSING_DATA
 					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
 				Log.e("TTS", "This Language is not supported");
+				supportsTextToSpeech=false;
+				
 			} else {
+				supportsTextToSpeech=true;
 				// speakOut();
 			}
 
@@ -165,91 +181,66 @@ public class MainActivity extends FragmentActivity implements
 
 	private void setupDatabases() {
 		try {
-			//init static objects
-			CurrentWord.lastSevenWords = new ArrayList<Word>();
-			CurrentWord.allWords = new ArrayList<Word>();
-			CurrentWord.previouslySavedWords = new ArrayList<ReviewWord>();
-			CurrentWord.alreadySeenStrings = new ArrayList<String>();
-			
-			//init databases
+			// init databases
 			dynamicdb = new LocalDBHelper(MainActivity.this);
-			SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(this);
-			//open db
-			dbhelper.CopyDataBaseFromAsset();
-			dbhelper.openDataBase();
-			for (ReviewWord r : dynamicdb.getReviewWords(false)) {
-				CurrentWord.alreadySeenStrings.add(r.getEnglish());
-System.out.println("previouslySaved Wrods: " +r.getEnglish());
-			}
-			// grabs all words that were ever seen and adds to
-			// CurrnetWord.alreadySeen
-			CurrentWord.previouslySavedWords = dynamicdb.getReviewWords(false);
-			// grabs all words from the given DB and adds to
-			// CurrentWord.allWords
-			// CurrentWord.allWords = dbhelper.getAllWords();
+			SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(MainActivity.this);
+
+			// open db
+						dbhelper.CopyDataBaseFromAsset();
+						dbhelper.openDataBase();
+						
+			// init static objects
 			CurrentWord.allWords = dbhelper.getAllWords();
-			for(Word k:CurrentWord.allWords){
-				System.out.println("all words "+k.getEnglish());
+			CurrentWord.previouslySavedWords = new ArrayList<ReviewWord>();
+			CurrentWord.previouslySavedStrings = new ArrayList<String>();
+
+			
+			for (ReviewWord r : dynamicdb.getReviewWords()) {
+				CurrentWord.previouslySavedStrings.add(r.getEnglish());
+				CurrentWord.previouslySavedWords.add(r);
 			}
-			int startFromLast = CurrentWord.allWords.size() - 1;
-			int stopHere = startFromLast - 7;
-			for (int i = startFromLast; i > stopHere; i--) {
-				CurrentWord.lastSevenWords.add(CurrentWord.allWords.get(i));
-				System.out.println("CurrentWord.lastSevenWords "+CurrentWord.allWords.get(i).getEnglish());
-			}
+			
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
-private void setWordsThatShouldBeReviewed(){
-	CurrentWord.shouldBeReviewedNow=new ArrayList<String>();
-	
-			 for (ReviewWord r : CurrentWord.previouslySavedWords) {
 
-			 String string = r.getTimeStamp();
-			 Calendar now = Calendar.getInstance();
-			 SimpleDateFormat dff = new SimpleDateFormat(
-			 "yyyy-MM-dd", Locale.ENGLISH);
-			 // if the date is 9 days in the past then simply
-			 // increment the number
-			 // if they indeed review it then we must set it back to 0
-			 String theTime = dff.format(now.getTime());
-			
-			
-		
-				 SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
-				   
-				    try {
-				        Date wordTimeStamp = dateFormat.parse(string);
-				        System.out.println(wordTimeStamp);
-				        System.out.println(wordTimeStamp);
+	private void setWordsThatShouldBeReviewed() {
+		CurrentWord.shouldBeBold = new ArrayList<String>();
 
-				        Calendar calendar = Calendar.getInstance();
-				        calendar.add(Calendar.DATE, -9);	
-				        
-				        Date nineDaysPrior = calendar.getTime();
-				        
-				        System.out.println(nineDaysPrior);
-				        System.out.println(nineDaysPrior);
-				        if(wordTimeStamp.before(nineDaysPrior)){
-				        	System.out.println(r.getEnglish() + "WORD SHOULD BE BOLD IN REVIEW SECTION");
-				        	CurrentWord.shouldBeReviewedNow.add(r.getEnglish());
-				        }else{
-				        	System.out.println("WORD SHOULD BE regular IN REVIEW SECTION");
-				        }
-				    } catch (ParseException e) {
-				        e.printStackTrace();
-				    }
-			 
-			 }
-}
+		//check all words and if haven't been viewed in 9 days. add to shouldBeBold list for review page
+		for (ReviewWord r : CurrentWord.previouslySavedWords) {
+			try {
+				String timestampOfWord = r.getTimeStamp();
+				Date wordTimeStamp = new SimpleDateFormat(
+						"yyyy-MM-dd hh:mm:ss").parse(timestampOfWord);
+				
+
+				Calendar calendar = Calendar.getInstance();
+				calendar.add(Calendar.DATE, -3);
+				Date nineDaysPrior = calendar.getTime();
+
+				
+				if (wordTimeStamp.before(nineDaysPrior)) {
+					System.out.println(r.getEnglish()
+							+ "hasn't been clicked in 9days");
+					CurrentWord.shouldBeBold.add(r.getEnglish());
+				}
+
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+
+		}
+	}
+
 	private void showCorrectWord() {
 		for (Word w : CurrentWord.allWords) {
 
 			// if no word has been chosen. and w isnt in review list.
 			// then we found the word that should be shown next
 			if (!currentWordIsSet
-					&& (!CurrentWord.alreadySeenStrings
+					&& (!CurrentWord.previouslySavedStrings
 							.contains(w.getEnglish()))) {
 
 				// if no word has been chosen and its a new day. then show new
@@ -261,13 +252,12 @@ private void setWordsThatShouldBeReviewed(){
 				} else if (CurrentWord.theCurrentWord == null
 						&& (!itsANewDay())) {
 					// no word was chosen. but its the same day
-
 					for (Word wrd : CurrentWord.allWords) {
 						// show the same word as earlier that day
 						if (wrd.getEnglish().contains(
-								CurrentWord.previouslySavedWords.get(
-										CurrentWord.previouslySavedWords.size() - 1)
-										.getEnglish())) {
+								CurrentWord.previouslySavedWords
+										.get(CurrentWord.previouslySavedWords
+												.size() - 1).getEnglish())) {
 							CurrentWord.theCurrentWord = wrd;
 						}
 					}
@@ -279,6 +269,12 @@ private void setWordsThatShouldBeReviewed(){
 
 	public void speakOut(View v) {
 		// speak the japanese text
+		
+		
+		if(!supportsTextToSpeech){
+			Toast.makeText(getApplicationContext(), "Your device does not support Japanese speech-to-text", Toast.LENGTH_LONG).show();
+			supportsTextToSpeech=true;
+		}
 		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
 		speakOut(textview.getText().toString());
 	}
@@ -349,17 +345,18 @@ private void setWordsThatShouldBeReviewed(){
 				TextView weatherTextView = (TextView) findViewById(R.id.weatherTextView);
 				weatherTextView.setTypeface(gothamFont);
 				CurrentWord.weatherString = weatherInfo.getCurrentTempF()
-						+ " degrees";
+						+ " °";
 				weatherTextView.setText(CurrentWord.weatherString);
 			} catch (Exception e) {
 				System.out.println("Exited app");
 			}
 		}
 	}
+	
 
 	private void setWeatherIcon(int code) {
 		mIvWeather0 = (ImageView) findViewById(R.id.imageView2);
-
+if(mIvWeather0!=null){
 		switch (code) {
 		case 0:
 			mIvWeather0.setImageResource(R.drawable.tornado);
@@ -509,8 +506,68 @@ private void setWordsThatShouldBeReviewed(){
 			mIvWeather0.setImageResource(R.drawable.sunny);
 			break;
 		}
+		}
 	}
+private void addSomeWords(){
+	CurrentWord.beginningReviewWords = new ArrayList<Word>();
+	CurrentWord.beginningReviewWords.add(new Word("give critical assistance",
+			"tasukete", "たすけて", "助けて", 0, "Thank you for helping me.",
+			"助 (たす)けてくれてありがとうございます。", "providecriticalassistance",
+			"Tasukete kurete arigatō gozaimasu.", 0,
+			"Help by Pieter J. Smits from the thenounproject.com"));
+	CurrentWord.allWords.add(new Word("give critical assistance",
+			"tasukete", "たすけて", "助けて", 0, "Thank you for helping me.",
+			"助 (たす)けてくれてありがとうございます。", "providecriticalassistance",
+			"Tasukete kurete arigatō gozaimasu.", 0,
+			"Help by Pieter J. Smits from the thenounproject.com"));
+	
+	CurrentWord.beginningReviewWords.add(new Word("business card", "meishi",
+			"めいし", "名刺", 0, "Here is my business card.", "私の名刺です。",
+			"businesscard", "Watashi no meishidesu.", 0,
+			"one, two, three"));
+	CurrentWord.allWords.add(new Word("business card", "meishi",
+			"めいし", "名刺", 0, "Here is my business card.", "私の名刺です。",
+			"businesscard", "Watashi no meishidesu.", 0,
+			"one, two, three"));
 
+	CurrentWord.beginningReviewWords.add(new Word("one, two, three",
+			"Ichi, ni, san", "いち、に、さん", "一 二 三 ", 0, "From scratch.",
+			"いちから 。", "onetwothree", " Ichi kara. ", 0, ""));
+	CurrentWord.allWords.add(new Word("one, two, three",
+			"Ichi, ni, san", "いち、に、さん", "一 二 三 ", 0, "From scratch.",
+			"いちから 。", "onetwothree", " Ichi kara. ", 0, ""));
+	
+	CurrentWord.beginningReviewWords
+			.add(new Word("coffee", "kōhī", "コーヒー", "珈琲", 0,
+					"Coffee grinder.", "コーヒーミル 。", "coffee",
+					"Kōhīmiru.", 0,
+					"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
+	CurrentWord.allWords.add(new Word("coffee", "kōhī", "コーヒー", "珈琲", 0,
+			"Coffee grinder.", "コーヒーミル 。", "coffee",
+			"Kōhīmiru.", 0,
+			"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
+	
+
+	CurrentWord.beginningReviewWords.add(new Word("cat", "neko", "ねこ", "猫",
+			0, " Kitten.", "こねこ。", "cat", "Koneko.", 0,
+			"Cat by Ramburu from the thenounproject.com"));
+	CurrentWord.allWords.add(new Word("cat", "neko", "ねこ", "猫",
+			0, " Kitten.", "こねこ。", "cat", "Koneko.", 0,
+			"Cat by Ramburu from the thenounproject.com"));
+	
+	CurrentWord.beginningReviewWords.add(new Word("spider", "kumo", "クモ",
+			"蜘蛛", 0, " Spider web.", "くものす。", "spider", "Kumo no su.",
+			0, "Spider by Johnbosco Ng from the thenounproject.com"));
+	CurrentWord.allWords.add(new Word("spider", "kumo", "クモ",
+			"蜘蛛", 0, " Spider web.", "くものす。", "spider", "Kumo no su.",
+			0, "Spider by Johnbosco Ng from the thenounproject.com"));
+	
+	CurrentWord.beginningReviewWords.add(new Word("white"	, "shiro"	, "しろ", "白 ", 0,
+			" Interesting.", "面白い 。", "white", "Omoshiroi.", 0, null));
+	CurrentWord.allWords.add(new Word("white"	, "shiro"	, "しろ", "白 ", 0,
+			" Interesting.", "面白い 。", "white", "Omoshiroi.", 0, null));
+	
+}
 	// private void saveDateAndNumberOfWords() {
 	//
 	// //if date is the same as the saved date then keep the same word
@@ -595,14 +652,94 @@ private void setWordsThatShouldBeReviewed(){
 			return null;
 		}
 	}
-	
-	public void goToTutorialPage(View v){
-		startActivity(new Intent(this,TutorialActivity.class));
+	private void showDialog(){
+    	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+				MainActivity.this);
+ 
+			// set title
+			alertDialogBuilder.setTitle("Purchase More Words?");
+ 
+			// set dialog message
+			alertDialogBuilder
+				.setMessage("Do you want to purchase all words and phrases rather than recieving 1 per day?")
+				.setCancelable(false)
+				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						
+						bp.purchase("com.panafold.allwords");
+						System.out.println("clicked");
+					}
+				  })
+				.setNegativeButton("No",new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog,int id) {
+						dialog.cancel();
+						}
+				});
+ 
+				// create alert dialog
+				AlertDialog alertDialog = alertDialogBuilder.create();
+ 
+				// show it
+				alertDialog.show();
+    }
+	public void goToTutorialPage(View v) {
+		startActivity(new Intent(this, TutorialActivity.class));
 	}
-	public void aboutPage(View v){
-		startActivity(new Intent(MainActivity.this,AboutPageActivity.class));
+
+	public void aboutPage(View v) {
+		startActivity(new Intent(MainActivity.this, AboutPageActivity.class));
 	}
-	public void getMoreWords(View v){
-		startActivity(new Intent(MainActivity.this,InAppPurchaseActivity.class));
+
+	public void getMoreWords(View v) {
+		showDialog();
 	}
+	@Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (!bp.handleActivityResult(requestCode, resultCode, data))
+            super.onActivityResult(requestCode, resultCode, data);
+    }
+	@Override
+    public void onBillingInitialized() {
+        System.out.println("onBillingInitialized");
+    }
+
+    @Override
+    public void onProductPurchased(String productId) {
+        /*
+         * Called then requested PRODUCT ID was successfully purchased
+         */
+    	System.out.println("onProductPurchased");
+    	
+    	LocalDBHelper dynamicdb = new LocalDBHelper(MainActivity.this);
+		dynamicdb.getWritableDatabase();
+		
+    	for(Word w : CurrentWord.allWords){
+    		if(CurrentWord.previouslySavedStrings.contains(w.getEnglish())){
+    			//if word is already saved do nothing
+    		}else{
+				dynamicdb.addWord(w);
+    		}
+    		
+    	}
+    	
+    	
+    }
+
+    @Override
+    public void onBillingError(int errorCode, Throwable error) {
+        /*
+         * Called then some error occured. See Constants class for more details
+         */
+    	System.out.println("onBillingError");
+    }
+
+    @Override
+    public void onPurchaseHistoryRestored() {
+        /*
+         * Called then purchase history was restored and the list of all owned PRODUCT ID's 
+         * was loaded from Google Play
+         */
+    	System.out.println("onPurchaseHistoryRestored");
+    }
 }

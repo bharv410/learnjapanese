@@ -1,5 +1,9 @@
 package com.panafold;
 
+import com.panafold.main.CurrentWord;
+import com.panafold.main.MainActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
@@ -7,11 +11,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
 import android.view.WindowManager;
 
 public class TutorialActivity extends FragmentActivity {
-
-    private static final int NUM_PAGES = 5;
 
     private ViewPager mPager;
     private PagerAdapter mPagerAdapter;
@@ -40,10 +43,13 @@ public class TutorialActivity extends FragmentActivity {
         }
     }
 
-    /**
-     * A simple pager adapter that represents 5 ScreenSlidePageFragment objects, in
-     * sequence.
-     */
+public void exitTutorial(View v){
+	if(CurrentWord.theCurrentWord!=null){
+		finish();
+	}else{
+		startActivity(new Intent(TutorialActivity.this,MainActivity.class));
+	}
+	}
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
             super(fm);
@@ -51,6 +57,8 @@ public class TutorialActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
+        	
+        	
         	switch(position){
         	case 0: return new TutorialFragment1();
 
@@ -59,9 +67,7 @@ public class TutorialActivity extends FragmentActivity {
         	case 2: return new TutorialFragment3();
         	
         	case 3: return new TutorialFragment4();
-        	
-        	case 4: return new TutorialFragment0();
-        	
+        	        	
         	}
 			return null;
         	 
@@ -70,7 +76,7 @@ public class TutorialActivity extends FragmentActivity {
             
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return 4;
         }
     }
     
@@ -79,6 +85,10 @@ public class TutorialActivity extends FragmentActivity {
     }
     
     public void nextPage(){
+    	try{
     	mPager.setCurrentItem(mPager.getCurrentItem() + 1);
+    	}catch(Exception e){
+    		System.out.print("Out of memory error");
+    	}
     }
 }

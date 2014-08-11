@@ -5,8 +5,6 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
-import android.widget.RelativeLayout;
 
 public class TutorialFragment4  extends Fragment {
 
@@ -21,15 +19,19 @@ public class TutorialFragment4  extends Fragment {
 	    public void onActivityCreated(Bundle savedInstanceState) {
 	        super.onActivityCreated(savedInstanceState);
 	        
-	        RelativeLayout rl = (RelativeLayout)getActivity().findViewById(R.id.slide4);
-	        rl.setOnClickListener(new OnClickListener(){
-
-				@Override
-				public void onClick(View v) {
-					TutorialActivity act = (TutorialActivity)getActivity();
-					act.nextPage();					
-				}
-	        	
-	        });
+//	        Button rl = (Button)getActivity().findViewById(R.id.slide4);
+//	        rl.setOnClickListener(new OnClickListener(){
+//
+//				@Override
+//				public void onClick(View v) {
+//					if(CurrentWord.theCurrentWord!=null){
+//						getActivity().finish();
+//					}else{
+//						startActivity(new Intent(getActivity(),MainActivity.class));
+//					}
+//									
+//				}
+//	        	
+//	        });
 	    }
 }

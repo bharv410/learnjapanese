@@ -16,9 +16,9 @@ import com.panafold.main.datamodel.Word;
 
 public class CurrentWord {
 	public static Word theCurrentWord;
-	public static List<Word> lastSevenWords,allWords;
+	public static List<Word> beginningReviewWords,allWords;
 	public static List<ReviewWord> previouslySavedWords;
-	public static List<String> alreadySeenStrings,shouldBeReviewedNow;
+	public static List<String> previouslySavedStrings,shouldBeBold;
 	public static String weatherString;
 	public static HashMap<String, Integer> getImage;
 	public static String currentColor;
@@ -71,13 +71,14 @@ public class CurrentWord {
 		getImage.put("Television", R.drawable.television);
 
 		getImage.put("taxi", R.drawable.taxi);
-		getImage.put("Coffee", R.drawable.coffee);
-		getImage.put("Spider", R.drawable.spider);
+		getImage.put("coffee", R.drawable.coffee);
+		getImage.put("spider", R.drawable.spider);
 		getImage.put("Kilometer", R.drawable.kilometer);
 		getImage.put("Internet", R.drawable.internet);
 		getImage.put("Urban", R.drawable.urban);
 		getImage.put("Apartment", R.drawable.apartment);
 		getImage.put("Bad thing", R.drawable.badthing);
+		getImage.put("give critical assistance", R.drawable.providecriticalassistance);
 		getImage.put("understand", R.drawable.understand);
 		getImage.put("Practice", R.drawable.practice);
 		getImage.put("apple", R.drawable.apple);
@@ -89,7 +90,7 @@ public class CurrentWord {
 		getImage.put("Hello hello (phone)", R.drawable.hellohello);
 		getImage.put("Once again", R.drawable.onceagain);
 		getImage.put("Eyeglasses", R.drawable.eyeglasses);
-		getImage.put("Business card", R.drawable.businesscard);
+		getImage.put("business card", R.drawable.businesscard);
 		getImage.put("Green", R.drawable.green);
 		getImage.put("Short", R.drawable.short_);
 		getImage.put("again", R.drawable.again);
@@ -98,7 +99,7 @@ public class CurrentWord {
 		getImage.put("Winter", R.drawable.winter);
 		getImage.put("Hospital", R.drawable.hospital);
 		getImage.put("Beginning", R.drawable.beginning);
-		getImage.put("Cat", R.drawable.cat);
+		getImage.put("cat", R.drawable.cat);
 		getImage.put("Japanese", R.drawable.japanese);
 		getImage.put("\"first, given name\"", R.drawable.internet);
 		getImage.put("what", R.drawable.what);
@@ -128,7 +129,7 @@ public class CurrentWord {
 		getImage.put("manufactured", R.drawable.manufactured);
 		getImage.put("Skillful", R.drawable.skillful);
 		getImage.put("time", R.drawable.time);
-		getImage.put("White", R.drawable.white);
+		getImage.put("white", R.drawable.white);
 		getImage.put("Book.", R.drawable.book);
 		getImage.put("Hometown", R.drawable.hometown);
 		getImage.put("question", R.drawable.question);
@@ -170,7 +171,7 @@ public class CurrentWord {
 		getImage.put("Dog", R.drawable.dog);
 		getImage.put("Someday", R.drawable.someday);
 		getImage.put("when", R.drawable.when);
-		getImage.put("\"One, two, three\"", R.drawable.onetwothree);
+		getImage.put("one, two, three", R.drawable.onetwothree);
 		getImage.put("Bon appetit.", R.drawable.bonappetit);
 		getImage.put("do", R.drawable.do_);
 		getImage.put("thanks", R.drawable.thanks);
