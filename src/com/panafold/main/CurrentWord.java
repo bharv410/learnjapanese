@@ -16,12 +16,13 @@ import com.panafold.main.datamodel.Word;
 
 public class CurrentWord {
 	public static Word theCurrentWord;
-	public static List<Word> beginningReviewWords,allWords;
+	public static List<Word> beginningReviewWords, allWords;
 	public static List<ReviewWord> previouslySavedWords;
-	public static List<String> previouslySavedStrings,shouldBeBold;
+	public static List<String> previouslySavedStrings, shouldBeBold;
 	public static String weatherString;
 	public static HashMap<String, Integer> getImage;
 	public static String currentColor;
+
 	public static String translate(String text) throws IOException {
 		// fetch
 		URL url = new URL(
@@ -42,147 +43,271 @@ public class CurrentWord {
 			sb.append(splits[i]);
 		return sb.toString().replace("\\n", "\n").replaceAll("\\\\(.)", "$1");
 	}
+
 	public static void initStrings() {
-		String[] colors= new String[5];
-		colors[0]="#CD7552";
-		colors[1]="#555F5F";
-		colors[2]="#99AB4C";
-		colors[3]="#F6B076";
-		colors[4]="#78C1A8";
-		
+		String[] colors = new String[5];
+		colors[0] = "#CD7552";
+		colors[1] = "#555F5F";
+		colors[2] = "#99AB4C";
+		colors[3] = "#F6B076";
+		colors[4] = "#78C1A8";
+
 		Random rd = new Random();
-		int randomNum =rd.nextInt(5);
-		currentColor=colors[randomNum];
-	
+		int randomNum = rd.nextInt(5);
+		currentColor = colors[randomNum];
+
 	}
+
 	public static void initHashMap() {
+
 		getImage = new HashMap<String, Integer>();
+
 		getImage.put("weather", R.drawable.weather);
+
 		getImage.put("cellphone", R.drawable.cellphone);
-		getImage.put("Child", R.drawable.child);
+
+		getImage.put("child", R.drawable.child);
+
 		getImage.put("home", R.drawable.home);
-		getImage.put("Restaurant", R.drawable.resturaunt);
+
+		getImage.put("restaurant", R.drawable.resturaunt);
+
 		getImage.put("hotel", R.drawable.hotel);
+
 		getImage.put("hip hop", R.drawable.hiphop);
 
-		getImage.put("Virtual reality", R.drawable.virtualreality);
+		getImage.put("virtual reality", R.drawable.virtualreality);
 
-		getImage.put("toilet", R.drawable.toilet);
-		getImage.put("Television", R.drawable.television);
+		getImage.put("bathroom", R.drawable.toilet);
+
+		getImage.put("television", R.drawable.television);
 
 		getImage.put("taxi", R.drawable.taxi);
+
 		getImage.put("coffee", R.drawable.coffee);
+
 		getImage.put("spider", R.drawable.spider);
-		getImage.put("Kilometer", R.drawable.kilometer);
-		getImage.put("Internet", R.drawable.internet);
-		getImage.put("Urban", R.drawable.urban);
-		getImage.put("Apartment", R.drawable.apartment);
-		getImage.put("Bad thing", R.drawable.badthing);
-		getImage.put("give critical assistance", R.drawable.providecriticalassistance);
+
+		getImage.put("kilometer", R.drawable.kilometer);
+
+		getImage.put("internet", R.drawable.internet);
+
+		getImage.put("urban", R.drawable.urban);
+
+		getImage.put("apartment", R.drawable.apartment);
+
+		getImage.put("bad thing", R.drawable.badthing);
+
+		getImage.put("give critical assistance",
+				R.drawable.providecriticalassistance);
+
 		getImage.put("understand", R.drawable.understand);
-		getImage.put("Practice", R.drawable.practice);
+
+		getImage.put("practice", R.drawable.practice);
+
 		getImage.put("apple", R.drawable.apple);
-		getImage.put("Camel", R.drawable.camel);
-		getImage.put("\"Four, five, six\"", R.drawable.fourfivesix);
-		getImage.put("Slowly", R.drawable.slowly);
+
+		getImage.put("camel", R.drawable.camel);
+
+		getImage.put("\"four, five, six\"", R.drawable.fourfivesix);
+
+		getImage.put("slowly", R.drawable.slowly);
+
 		getImage.put("quit", R.drawable.quit);
-		getImage.put("Problem", R.drawable.problem);
-		getImage.put("Hello hello (phone)", R.drawable.hellohello);
-		getImage.put("Once again", R.drawable.onceagain);
-		getImage.put("Eyeglasses", R.drawable.eyeglasses);
+
+		getImage.put("problem", R.drawable.problem);
+
+		getImage.put("hello hello (phone)", R.drawable.hellohello);
+
+		getImage.put("once again", R.drawable.onceagain);
+
+		getImage.put("eyeglasses", R.drawable.eyeglasses);
+
 		getImage.put("business card", R.drawable.businesscard);
-		getImage.put("Green", R.drawable.green);
-		getImage.put("Short", R.drawable.short_);
+
+		getImage.put("green", R.drawable.green);
+
+		getImage.put("short", R.drawable.short_);
+
 		getImage.put("again", R.drawable.again);
-		getImage.put("Chubby", R.drawable.chubby);
-		getImage.put("Incompetent", R.drawable.incompetent);
-		getImage.put("Winter", R.drawable.winter);
-		getImage.put("Hospital", R.drawable.hospital);
-		getImage.put("Beginning", R.drawable.beginning);
+
+		getImage.put("chubby", R.drawable.chubby);
+
+		getImage.put("incompetent", R.drawable.incompetent);
+
+		getImage.put("winter", R.drawable.winter);
+
+		getImage.put("hospital", R.drawable.hospital);
+
+		getImage.put("beginning", R.drawable.beginning);
+
 		getImage.put("cat", R.drawable.cat);
+
 		getImage.put("Japanese", R.drawable.japanese);
+
 		getImage.put("\"first, given name\"", R.drawable.internet);
+
 		getImage.put("what", R.drawable.what);
-		getImage.put("Summer", R.drawable.summer);
-		getImage.put("Long", R.drawable.long_);
+
+		getImage.put("summer", R.drawable.summer);
+
+		getImage.put("long", R.drawable.long_);
+
 		getImage.put("where", R.drawable.where);
-		getImage.put("Please (offering)", R.drawable.pleaseoffering);
-		getImage.put("Bird", R.drawable.bird);
-		getImage.put("Friend", R.drawable.friend);
-		getImage.put("Next to", R.drawable.nextto);
-		getImage.put("Year", R.drawable.year);
+
+		getImage.put("please (offering)", R.drawable.pleaseoffering);
+
+		getImage.put("bird", R.drawable.bird);
+
+		getImage.put("friend", R.drawable.friend);
+
+		getImage.put("next to", R.drawable.nextto);
+
+		getImage.put("year", R.drawable.year);
+
 		getImage.put("Tokyo", R.drawable.tokyo);
+
 		getImage.put("assist", R.drawable.assist);
-		getImage.put("Hand", R.drawable.hand);
+
+		getImage.put("hand", R.drawable.hand);
+
 		getImage.put("tired", R.drawable.tired);
+
 		getImage.put("a little", R.drawable.alittle);
-		getImage.put("Like very much", R.drawable.likeverymuch);
+
+		getImage.put("like very much", R.drawable.likeverymuch);
+
 		getImage.put("food", R.drawable.food);
-		getImage.put("Fun", R.drawable.fun);
+
+		getImage.put("fun", R.drawable.fun);
+
 		getImage.put("IÕm back", R.drawable.imback);
+
 		getImage.put("provide critical assistance",
 				R.drawable.providecriticalassistance);
+
 		getImage.put("teacher", R.drawable.teacher);
-		getImage.put("Life", R.drawable.life);
+
+		getImage.put("life", R.drawable.life);
+
 		getImage.put("adult", R.drawable.adult);
+
 		getImage.put("sorry", R.drawable.sorry);
+
 		getImage.put("manufactured", R.drawable.manufactured);
-		getImage.put("Skillful", R.drawable.skillful);
+
+		getImage.put("skillful", R.drawable.skillful);
+
 		getImage.put("time", R.drawable.time);
+
 		getImage.put("white", R.drawable.white);
-		getImage.put("Book.", R.drawable.book);
-		getImage.put("Hometown", R.drawable.hometown);
+
+		getImage.put("book.", R.drawable.book);
+
+		getImage.put("hometown", R.drawable.hometown);
+
 		getImage.put("question", R.drawable.question);
-		getImage.put("Cold", R.drawable.cold);
+
+		getImage.put("cold", R.drawable.cold);
+
 		getImage.put("good evening", R.drawable.goodevening);
-		getImage.put("Good Afternoon", R.drawable.goodafternoon);
-		getImage.put("Spring", R.drawable.spring);
+
+		getImage.put("good afternoon", R.drawable.goodafternoon);
+
+		getImage.put("spring", R.drawable.spring);
+
 		getImage.put("this", R.drawable.this_);
-		getImage.put("Thing", R.drawable.thing);
-		getImage.put("\"This one, this way\"", R.drawable.thisonethisway);
-		getImage.put("Highway", R.drawable.highway);
+
+		getImage.put("thing", R.drawable.thing);
+
+		getImage.put("\"this one, this way\"", R.drawable.thisonethisway);
+
+		getImage.put("highway", R.drawable.highway);
+
 		getImage.put("English", R.drawable.english);
+
 		getImage.put("\"fine, healthy\"", R.drawable.healthyfine);
+
 		getImage.put("police", R.drawable.police);
-		getImage.put("Black", R.drawable.black);
-		getImage.put("Cloud", R.drawable.cloud);
-		getImage.put("Socks", R.drawable.socks);
-		getImage.put("\"Shoes, boots\"", R.drawable.shoesboots);
-		getImage.put("Please (a favor)", R.drawable.pleasefavor);
+
+		getImage.put("black", R.drawable.black);
+
+		getImage.put("cloud", R.drawable.cloud);
+
+		getImage.put("socks", R.drawable.socks);
+
+		getImage.put("\"shoes, boots\"", R.drawable.shoesboots);
+
+		getImage.put("please (a favor)", R.drawable.pleasefavor);
+
 		getImage.put("airport", R.drawable.airport);
-		getImage.put("Today", R.drawable.today);
+
+		getImage.put("today", R.drawable.today);
+
 		getImage.put("dangerous", R.drawable.dangerous);
-		getImage.put("Yellow", R.drawable.yellow);
-		getImage.put("Feeling", R.drawable.feeling);
-		getImage.put("Tree", R.drawable.tree);
-		getImage.put("Student", R.drawable.student);
+
+		getImage.put("yellow", R.drawable.yellow);
+
+		getImage.put("feeling", R.drawable.feeling);
+
+		getImage.put("tree", R.drawable.tree);
+
+		getImage.put("student", R.drawable.student);
+
 		getImage.put("\"cool, stylish\"", R.drawable.cool);
-		getImage.put("Write", R.drawable.write);
+
+		getImage.put("write", R.drawable.write);
+
 		getImage.put("office worker", R.drawable.officeworker);
+
 		getImage.put("idea", R.drawable.idea);
+
 		getImage.put("hungry", R.drawable.hunfry);
-		getImage.put("Tea", R.drawable.tea);
+
+		getImage.put("tea", R.drawable.tea);
+
 		getImage.put("welcome(home)", R.drawable.welcomehome);
-		getImage.put("Yen", R.drawable.yen);
+
+		getImage.put("yen", R.drawable.yen);
+
 		getImage.put("railway station", R.drawable.railwaystation);
-		getImage.put("Movies", R.drawable.movies);
-		getImage.put("Horse", R.drawable.horse);
+
+		getImage.put("movies", R.drawable.movies);
+
+		getImage.put("horse", R.drawable.horse);
+
 		getImage.put("clothes", R.drawable.clothes);
-		getImage.put("Dog", R.drawable.dog);
-		getImage.put("Someday", R.drawable.someday);
+
+		getImage.put("dog", R.drawable.dog);
+
+		getImage.put("someday", R.drawable.someday);
+
 		getImage.put("when", R.drawable.when);
+
 		getImage.put("one, two, three", R.drawable.onetwothree);
-		getImage.put("Bon appetit.", R.drawable.bonappetit);
+
+		getImage.put("bon appetit.", R.drawable.bonappetit);
+
 		getImage.put("do", R.drawable.do_);
+
 		getImage.put("thanks", R.drawable.thanks);
-		getImage.put("Hot", R.drawable.hot);
+
+		getImage.put("hot", R.drawable.hot);
+
 		getImage.put("tomorrow", R.drawable.tomorrow);
-		getImage.put("Autumn", R.drawable.autumn);
-		getImage.put("Red", R.drawable.red);
-		getImage.put("Blue", R.drawable.blue);
-		getImage.put("\"Seven, eight, nine, ten.\"", R.drawable.seveneightnineten);
-		getImage.put("Hat", R.drawable.hat);
-		getImage.put("Congratulations", R.drawable.congratulations);
+
+		getImage.put("autumn", R.drawable.autumn);
+
+		getImage.put("red", R.drawable.red);
+
+		getImage.put("blue", R.drawable.blue);
+
+		getImage.put("\"seven, eight, nine, ten.\"",
+				R.drawable.seveneightnineten);
+
+		getImage.put("hat", R.drawable.hat);
+
+		getImage.put("congratulations", R.drawable.congratulations);
 
 	}
 }

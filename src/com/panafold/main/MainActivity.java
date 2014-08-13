@@ -73,7 +73,7 @@ public class MainActivity extends FragmentActivity implements
 		supportsTextToSpeech=false;
 		
 		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
-		bp = new BillingProcessor(this, null, this);
+		bp = new BillingProcessor(this, base64EncodedPublicKey, this);
 		
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
@@ -264,6 +264,11 @@ public class MainActivity extends FragmentActivity implements
 				}
 				currentWordIsSet = true;
 			}
+			
+			
+			//if word is still not set by the end then set it to the last word
+			if(CurrentWord.allWords.get(CurrentWord.allWords.size()-1).equals(w))
+				CurrentWord.theCurrentWord=w;
 		}
 	}
 
