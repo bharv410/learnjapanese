@@ -24,7 +24,7 @@
             android:layout_centerHorizontal="true"
             android:layout_marginTop="10dp"
             android:gravity="center"
-            android:text="japanese word"
+            android:text="translating..."
             android:textAppearance="?android:attr/textAppearanceLarge"
             android:textColor="#6D6E70"
             android:textSize="40dp"
@@ -59,7 +59,7 @@
             android:layout_centerVertical="true"
             android:layout_marginLeft="20dp"
             android:text="Date"
-            android:textColor="#6D6E70"
+            android:textColor="#F8EFCB"
             android:textSize="36sp" />
 
         <ImageView
@@ -77,8 +77,18 @@
             android:layout_alignLeft="@+id/imageView2"
             android:layout_below="@+id/imageView2"
             android:layout_marginLeft="17dp"
-            android:textColor="#6D6E70"
+            android:textColor="#F8EFCB"
             android:textSize="24sp" />
+
+        <TextView
+            android:id="@+id/imageCreditTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:text="Image Credit"
+            android:textColor="#F8EFCB"
+            android:textSize="4sp" />
 
     </RelativeLayout>
 

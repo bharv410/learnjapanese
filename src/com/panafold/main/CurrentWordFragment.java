@@ -105,6 +105,11 @@ public class CurrentWordFragment extends Fragment {
 		//set thejapenese text
 		TextView text2 = (TextView) getActivity().findViewById(R.id.japaneseTextView);
 		text2.setText(CurrentWord.theCurrentWord.getKanji());
+		
+		//set image credits
+		TextView text3 = (TextView) getActivity().findViewById(R.id.imageCreditTextView);
+		text3.setText(CurrentWord.theCurrentWord.getCred());
+		
         
         //initialize progress bar
 //        weatherPB=(ProgressBar)getActivity().findViewById(R.id.weatherProgressBar);
@@ -112,7 +117,7 @@ public class CurrentWordFragment extends Fragment {
         
         //set current date and time 
         Calendar cal=Calendar.getInstance();
-        SimpleDateFormat month_date = new SimpleDateFormat("F MMMM",Locale.US);
+        SimpleDateFormat month_date = new SimpleDateFormat("dd MMMM",Locale.US);
         SimpleDateFormat day_date = new SimpleDateFormat("EEE",Locale.US);
         String month_name = month_date.format(cal.getTime());
         String day_name = day_date.format(cal.getTime());
@@ -145,6 +150,10 @@ public class CurrentWordFragment extends Fragment {
     		    	String romText = CurrentWord.theCurrentWord.getRomaji().replace("\r\n", " ").replace("\n", " ");
     		    	romTextView.setText(romText);
     		    	
+    		    	
+    		    	System.out.println(romText);
+    		    	System.out.println(romText);
+    		    	
     		    	//show japanese and hide weather and date and line
     		    	TextView dateView = (TextView)getActivity().findViewById(R.id.dateTextView);
     		    	dateView.setVisibility(View.INVISIBLE);
@@ -158,6 +167,8 @@ public class CurrentWordFragment extends Fragment {
     	    	}else if(MainActivity.shown%3==1){
     	    		String romText2 = CurrentWord.theCurrentWord.getHirigana().replace("\r\n", " ").replace("\n", " ");
     		    	romTextView.setText(romText2);
+    		    	System.out.println(romText2);
+    		    	System.out.println(romText2);
     		    	romTextView.setTypeface(MainActivity.japaneseFont);
     		    	MainActivity.shown++;MainActivity.shown++;
     	    	}else{

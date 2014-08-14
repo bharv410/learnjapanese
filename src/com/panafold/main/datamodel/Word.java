@@ -1,7 +1,7 @@
 package com.panafold.main.datamodel;
 
 public class Word {
-	String english, romaji, hirigana, kanji, japPhrase, englPhrase, romPhrase,imageUrl;
+	String english, romaji, hirigana, kanji, japPhrase, englPhrase, romPhrase,imageUrl,imageCredit;
 
 	public Word(String eng, String rom, String hir, String kan,
 			int unlock, String engPhras, String japPhras, String image
@@ -16,12 +16,16 @@ public class Word {
 		this.japPhrase = japPhras;
 		this.imageUrl = image;
 		this.romPhrase=romajiPhrase;
+		this.imageCredit=attr;
 //		this.timestamp=timeStamp;
 		
 	}
 
 	public String getEnglish() {
 		return this.english;
+	}
+	public String getCred() {
+		return this.imageCredit;
 	}
 
 	public String getRomaji() {

@@ -95,7 +95,7 @@ public class MainActivity extends FragmentActivity implements
 
 			@Override
 			public void onPageSelected(int i) {
-				if (i == 1) {
+				if (i <= 1) {
 					titleIndicator.setBackgroundColor(Color
 							.parseColor("#F8EFCB"));
 				} else {
@@ -282,7 +282,7 @@ public class MainActivity extends FragmentActivity implements
 
 		if (!supportsTextToSpeech) {
 			Toast.makeText(getApplicationContext(),
-					"Your device does not support Japanese speech-to-text",
+					"Your device does not support Japanese text-to-speech",
 					Toast.LENGTH_LONG).show();
 			supportsTextToSpeech = true;
 		}
