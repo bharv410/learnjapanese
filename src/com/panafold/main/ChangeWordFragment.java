@@ -143,11 +143,9 @@ public class ChangeWordFragment extends ListFragment {
 					if (CurrentWord.shouldBeBold.contains(item)) {
 						itemView.setTypeface(itemView.getTypeface(),
 								Typeface.BOLD);
-						System.out.println("Should be bold :" + item);
 
 					} else {
 						itemView.setTypeface(null, Typeface.NORMAL);
-						System.out.println("Should be normal :" + item);
 					}
 
 					itemView.setText(item);
@@ -159,12 +157,17 @@ public class ChangeWordFragment extends ListFragment {
 					options.inPurgeable = true; // inPurgeable is used to free
 												// up
 												// memory while required
+					
+					try{
 					Bitmap bm = drawableToBitmap(getResources().getDrawable(
 							CurrentWord.getImage.get(item)));
 					Bitmap bm2 = Bitmap.createScaledBitmap(bm,
 							bm.getWidth() / 3, bm.getHeight() / 3, true);
 
 					iv.setImageBitmap(bm2);
+					}catch(NullPointerException e){
+						System.out.println(item +" doesnt have a pic");
+					}
 				}
 			}
 			return view;

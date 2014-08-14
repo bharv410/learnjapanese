@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.Random;
 
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
@@ -39,7 +40,6 @@ import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.panafold.AboutPageActivity;
-import com.panafold.InAppPurchaseActivity;
 import com.panafold.R;
 import com.panafold.TutorialActivity;
 import com.panafold.adapter.TabsPagerAdapter;
@@ -50,7 +50,8 @@ import com.panafold.main.datamodel.Word;
 import com.viewpagerindicator.LinePageIndicator;
 
 public class MainActivity extends FragmentActivity implements
-		TextToSpeech.OnInitListener, YahooWeatherInfoListener, BillingProcessor.IBillingHandler{
+		TextToSpeech.OnInitListener, YahooWeatherInfoListener,
+		BillingProcessor.IBillingHandler {
 	private TextToSpeech tts;
 	private ViewPager viewPager;
 	private TabsPagerAdapter mAdapter;
@@ -63,18 +64,19 @@ public class MainActivity extends FragmentActivity implements
 	LocalDBHelper dynamicdb;
 	public static Typeface gothamFont, neutrafaceFont, japaneseFont;
 	private ProgressBar weatherPB;
-	private Boolean currentWordIsSet,supportsTextToSpeech;
+	private Boolean currentWordIsSet, supportsTextToSpeech;
 	BillingProcessor bp;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-		supportsTextToSpeech=false;
-		
+		supportsTextToSpeech = false;
+
 		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
 		bp = new BillingProcessor(this, base64EncodedPublicKey, this);
-		
+
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		mAdapter = new TabsPagerAdapter(getSupportFragmentManager());
 		viewPager.setAdapter(mAdapter);
@@ -111,10 +113,10 @@ public class MainActivity extends FragmentActivity implements
 
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
-		
+
 		setupFonts();
 		setupDatabases();
-		
+
 		setWordsThatShouldBeReviewed();
 		addSomeWords();
 		showCorrectWord();
@@ -149,16 +151,14 @@ public class MainActivity extends FragmentActivity implements
 			tts.stop();
 			tts.shutdown();
 		}
-		 if (bp != null) 
-	            bp.release();
+		if (bp != null)
+			bp.release();
 		super.onDestroy();
 	}
 
 	@Override
 	public void onInit(int status) {
 
-		
-		
 		if (status == TextToSpeech.SUCCESS) {
 
 			int result = tts.setLanguage(Locale.JAPANESE);
@@ -166,10 +166,10 @@ public class MainActivity extends FragmentActivity implements
 			if (result == TextToSpeech.LANG_MISSING_DATA
 					|| result == TextToSpeech.LANG_NOT_SUPPORTED) {
 				Log.e("TTS", "This Language is not supported");
-				supportsTextToSpeech=false;
-				
+				supportsTextToSpeech = false;
+
 			} else {
-				supportsTextToSpeech=true;
+				supportsTextToSpeech = true;
 				// speakOut();
 			}
 
@@ -186,20 +186,19 @@ public class MainActivity extends FragmentActivity implements
 			SqlLiteDbHelper dbhelper = new SqlLiteDbHelper(MainActivity.this);
 
 			// open db
-						dbhelper.CopyDataBaseFromAsset();
-						dbhelper.openDataBase();
-						
+			dbhelper.CopyDataBaseFromAsset();
+			dbhelper.openDataBase();
+
 			// init static objects
 			CurrentWord.allWords = dbhelper.getAllWords();
 			CurrentWord.previouslySavedWords = new ArrayList<ReviewWord>();
 			CurrentWord.previouslySavedStrings = new ArrayList<String>();
 
-			
 			for (ReviewWord r : dynamicdb.getReviewWords()) {
 				CurrentWord.previouslySavedStrings.add(r.getEnglish());
 				CurrentWord.previouslySavedWords.add(r);
 			}
-			
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -208,19 +207,18 @@ public class MainActivity extends FragmentActivity implements
 	private void setWordsThatShouldBeReviewed() {
 		CurrentWord.shouldBeBold = new ArrayList<String>();
 
-		//check all words and if haven't been viewed in 9 days. add to shouldBeBold list for review page
+		// check all words and if haven't been viewed in 9 days. add to
+		// shouldBeBold list for review page
 		for (ReviewWord r : CurrentWord.previouslySavedWords) {
 			try {
 				String timestampOfWord = r.getTimeStamp();
-				Date wordTimeStamp = new SimpleDateFormat(
-						"yyyy-MM-dd hh:mm:ss").parse(timestampOfWord);
-				
+				Date wordTimeStamp = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss")
+						.parse(timestampOfWord);
 
 				Calendar calendar = Calendar.getInstance();
 				calendar.add(Calendar.DATE, -3);
 				Date nineDaysPrior = calendar.getTime();
 
-				
 				if (wordTimeStamp.before(nineDaysPrior)) {
 					System.out.println(r.getEnglish()
 							+ "hasn't been clicked in 9days");
@@ -235,13 +233,25 @@ public class MainActivity extends FragmentActivity implements
 	}
 
 	private void showCorrectWord() {
+		// if they bought all the words then show a random one
+		int savedWordsSize = CurrentWord.previouslySavedWords.size();
+		int allWordsSize = CurrentWord.allWords.size();
+		if (savedWordsSize >= allWordsSize) {
+			Random r = new Random();
+			CurrentWord.theCurrentWord = CurrentWord.allWords.get(r
+					.nextInt(allWordsSize - 1));
+			currentWordIsSet = true;
+			System.out.println("THey bought the words");
+		}
+
+		// DIDNT BUY WORDS vvvvvvv
 		for (Word w : CurrentWord.allWords) {
 
 			// if no word has been chosen. and w isnt in review list.
 			// then we found the word that should be shown next
 			if (!currentWordIsSet
-					&& (!CurrentWord.previouslySavedStrings
-							.contains(w.getEnglish()))) {
+					&& (!CurrentWord.previouslySavedStrings.contains(w
+							.getEnglish()))) {
 
 				// if no word has been chosen and its a new day. then show new
 				// word and save to db
@@ -264,21 +274,17 @@ public class MainActivity extends FragmentActivity implements
 				}
 				currentWordIsSet = true;
 			}
-			
-			
-			//if word is still not set by the end then set it to the last word
-			if(CurrentWord.allWords.get(CurrentWord.allWords.size()-1).equals(w))
-				CurrentWord.theCurrentWord=w;
 		}
 	}
 
 	public void speakOut(View v) {
 		// speak the japanese text
-		
-		
-		if(!supportsTextToSpeech){
-			Toast.makeText(getApplicationContext(), "Your device does not support Japanese speech-to-text", Toast.LENGTH_LONG).show();
-			supportsTextToSpeech=true;
+
+		if (!supportsTextToSpeech) {
+			Toast.makeText(getApplicationContext(),
+					"Your device does not support Japanese speech-to-text",
+					Toast.LENGTH_LONG).show();
+			supportsTextToSpeech = true;
 		}
 		TextView textview = (TextView) findViewById(R.id.japaneseTextView);
 		speakOut(textview.getText().toString());
@@ -357,222 +363,222 @@ public class MainActivity extends FragmentActivity implements
 			}
 		}
 	}
-	
 
 	private void setWeatherIcon(int code) {
 		mIvWeather0 = (ImageView) findViewById(R.id.imageView2);
-if(mIvWeather0!=null){
-		switch (code) {
-		case 0:
-			mIvWeather0.setImageResource(R.drawable.tornado);
-			break;
-		case 1:
-			mIvWeather0.setImageResource(R.drawable.storm);
-			break;
-		case 2:
-			mIvWeather0.setImageResource(R.drawable.tornado);
-			break;
-		case 3:
-			mIvWeather0.setImageResource(R.drawable.storm);
-			break;
-		case 4:
-			mIvWeather0.setImageResource(R.drawable.storm);
-			break;
-		case 5:
-			mIvWeather0.setImageResource(R.drawable.rainsnow);
-			break;
-		case 6:
-			mIvWeather0.setImageResource(R.drawable.rainhail);
-			break;
-		case 7:
-			mIvWeather0.setImageResource(R.drawable.rainsnow);
-			break;
-		case 8:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 9:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 10:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 11:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 12:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 13:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 14:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 15:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 16:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 17:
-			mIvWeather0.setImageResource(R.drawable.rainhail);
-			break;
-		case 18:
-			mIvWeather0.setImageResource(R.drawable.rainhail);
-			break;
-		case 19:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 20:
-			mIvWeather0.setImageResource(R.drawable.foggy);
-			break;
-		case 21:
-			mIvWeather0.setImageResource(R.drawable.foggy);
-			break;
-		case 22:
-			mIvWeather0.setImageResource(R.drawable.foggy);
-			break;
-		case 23:
-			mIvWeather0.setImageResource(R.drawable.foggy);
-			break;
-		case 24:
-			mIvWeather0.setImageResource(R.drawable.windy);
-			break;
-		case 25:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 26:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 27:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 28:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 29:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 30:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 31:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 32:
-			mIvWeather0.setImageResource(R.drawable.sunny);
-			break;
-		case 33:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 34:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 35:
-			mIvWeather0.setImageResource(R.drawable.rainsnow);
-			break;
-		case 36:
-			mIvWeather0.setImageResource(R.drawable.sunny);
-			break;
-		case 37:
-			mIvWeather0.setImageResource(R.drawable.thunderstorm);
-			break;
-		case 38:
-			mIvWeather0.setImageResource(R.drawable.thunderstorm);
-			break;
-		case 39:
-			mIvWeather0.setImageResource(R.drawable.thunderstorm);
-			break;
-		case 40:
-			mIvWeather0.setImageResource(R.drawable.rain);
-			break;
-		case 41:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 42:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 43:
-			mIvWeather0.setImageResource(R.drawable.snow);
-			break;
-		case 44:
-			mIvWeather0.setImageResource(R.drawable.storm);
-			break;
-		case 45:
-			mIvWeather0.setImageResource(R.drawable.cloudy);
-			break;
-		case 46:
-			mIvWeather0.setImageResource(R.drawable.rainsnow);
-			break;
-		case 47:
-			mIvWeather0.setImageResource(R.drawable.thunderstorm);
-			break;
-		default:
-			mIvWeather0.setImageResource(R.drawable.sunny);
-			break;
-		}
+		if (mIvWeather0 != null) {
+			switch (code) {
+			case 0:
+				mIvWeather0.setImageResource(R.drawable.tornado);
+				break;
+			case 1:
+				mIvWeather0.setImageResource(R.drawable.storm);
+				break;
+			case 2:
+				mIvWeather0.setImageResource(R.drawable.tornado);
+				break;
+			case 3:
+				mIvWeather0.setImageResource(R.drawable.storm);
+				break;
+			case 4:
+				mIvWeather0.setImageResource(R.drawable.storm);
+				break;
+			case 5:
+				mIvWeather0.setImageResource(R.drawable.rainsnow);
+				break;
+			case 6:
+				mIvWeather0.setImageResource(R.drawable.rainhail);
+				break;
+			case 7:
+				mIvWeather0.setImageResource(R.drawable.rainsnow);
+				break;
+			case 8:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 9:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 10:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 11:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 12:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 13:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 14:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 15:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 16:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 17:
+				mIvWeather0.setImageResource(R.drawable.rainhail);
+				break;
+			case 18:
+				mIvWeather0.setImageResource(R.drawable.rainhail);
+				break;
+			case 19:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 20:
+				mIvWeather0.setImageResource(R.drawable.foggy);
+				break;
+			case 21:
+				mIvWeather0.setImageResource(R.drawable.foggy);
+				break;
+			case 22:
+				mIvWeather0.setImageResource(R.drawable.foggy);
+				break;
+			case 23:
+				mIvWeather0.setImageResource(R.drawable.foggy);
+				break;
+			case 24:
+				mIvWeather0.setImageResource(R.drawable.windy);
+				break;
+			case 25:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 26:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 27:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 28:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 29:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 30:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 31:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 32:
+				mIvWeather0.setImageResource(R.drawable.sunny);
+				break;
+			case 33:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 34:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 35:
+				mIvWeather0.setImageResource(R.drawable.rainsnow);
+				break;
+			case 36:
+				mIvWeather0.setImageResource(R.drawable.sunny);
+				break;
+			case 37:
+				mIvWeather0.setImageResource(R.drawable.thunderstorm);
+				break;
+			case 38:
+				mIvWeather0.setImageResource(R.drawable.thunderstorm);
+				break;
+			case 39:
+				mIvWeather0.setImageResource(R.drawable.thunderstorm);
+				break;
+			case 40:
+				mIvWeather0.setImageResource(R.drawable.rain);
+				break;
+			case 41:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 42:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 43:
+				mIvWeather0.setImageResource(R.drawable.snow);
+				break;
+			case 44:
+				mIvWeather0.setImageResource(R.drawable.storm);
+				break;
+			case 45:
+				mIvWeather0.setImageResource(R.drawable.cloudy);
+				break;
+			case 46:
+				mIvWeather0.setImageResource(R.drawable.rainsnow);
+				break;
+			case 47:
+				mIvWeather0.setImageResource(R.drawable.thunderstorm);
+				break;
+			default:
+				mIvWeather0.setImageResource(R.drawable.sunny);
+				break;
+			}
 		}
 	}
-private void addSomeWords(){
-	CurrentWord.beginningReviewWords = new ArrayList<Word>();
-	CurrentWord.beginningReviewWords.add(new Word("give critical assistance",
-			"tasukete", "たすけて", "助けて", 0, "Thank you for helping me.",
-			"助 (たす)けてくれてありがとうございます。", "providecriticalassistance",
-			"Tasukete kurete arigatō gozaimasu.", 0,
-			"Help by Pieter J. Smits from the thenounproject.com"));
-	CurrentWord.allWords.add(new Word("give critical assistance",
-			"tasukete", "たすけて", "助けて", 0, "Thank you for helping me.",
-			"助 (たす)けてくれてありがとうございます。", "providecriticalassistance",
-			"Tasukete kurete arigatō gozaimasu.", 0,
-			"Help by Pieter J. Smits from the thenounproject.com"));
-	
-	CurrentWord.beginningReviewWords.add(new Word("business card", "meishi",
-			"めいし", "名刺", 0, "Here is my business card.", "私の名刺です。",
-			"businesscard", "Watashi no meishidesu.", 0,
-			"one, two, three"));
-	CurrentWord.allWords.add(new Word("business card", "meishi",
-			"めいし", "名刺", 0, "Here is my business card.", "私の名刺です。",
-			"businesscard", "Watashi no meishidesu.", 0,
-			"one, two, three"));
 
-	CurrentWord.beginningReviewWords.add(new Word("one, two, three",
-			"Ichi, ni, san", "いち、に、さん", "一 二 三 ", 0, "From scratch.",
-			"いちから 。", "onetwothree", " Ichi kara. ", 0, ""));
-	CurrentWord.allWords.add(new Word("one, two, three",
-			"Ichi, ni, san", "いち、に、さん", "一 二 三 ", 0, "From scratch.",
-			"いちから 。", "onetwothree", " Ichi kara. ", 0, ""));
-	
-	CurrentWord.beginningReviewWords
-			.add(new Word("coffee", "kōhī", "コーヒー", "珈琲", 0,
-					"Coffee grinder.", "コーヒーミル 。", "coffee",
-					"Kōhīmiru.", 0,
-					"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
-	CurrentWord.allWords.add(new Word("coffee", "kōhī", "コーヒー", "珈琲", 0,
-			"Coffee grinder.", "コーヒーミル 。", "coffee",
-			"Kōhīmiru.", 0,
-			"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
-	
+	private void addSomeWords() {
+		CurrentWord.beginningReviewWords = new ArrayList<Word>();
+		CurrentWord.beginningReviewWords.add(new Word(
+				"give critical assistance", "tasukete", "たすけて", "助けて", 0,
+				"Thank you for helping me.", "助 (たす)けてくれてありがとうございます。",
+				"providecriticalassistance",
+				"Tasukete kurete arigatō gozaimasu.", 0,
+				"Help by Pieter J. Smits from the thenounproject.com"));
+		CurrentWord.allWords.add(new Word("give critical assistance",
+				"tasukete", "たすけて", "助けて", 0, "Thank you for helping me.",
+				"助 (たす)けてくれてありがとうございます。", "providecriticalassistance",
+				"Tasukete kurete arigatō gozaimasu.", 0,
+				"Help by Pieter J. Smits from the thenounproject.com"));
 
-	CurrentWord.beginningReviewWords.add(new Word("cat", "neko", "ねこ", "猫",
-			0, " Kitten.", "こねこ。", "cat", "Koneko.", 0,
-			"Cat by Ramburu from the thenounproject.com"));
-	CurrentWord.allWords.add(new Word("cat", "neko", "ねこ", "猫",
-			0, " Kitten.", "こねこ。", "cat", "Koneko.", 0,
-			"Cat by Ramburu from the thenounproject.com"));
-	
-	CurrentWord.beginningReviewWords.add(new Word("spider", "kumo", "クモ",
-			"蜘蛛", 0, " Spider web.", "くものす。", "spider", "Kumo no su.",
-			0, "Spider by Johnbosco Ng from the thenounproject.com"));
-	CurrentWord.allWords.add(new Word("spider", "kumo", "クモ",
-			"蜘蛛", 0, " Spider web.", "くものす。", "spider", "Kumo no su.",
-			0, "Spider by Johnbosco Ng from the thenounproject.com"));
-	
-	CurrentWord.beginningReviewWords.add(new Word("white"	, "shiro"	, "しろ", "白 ", 0,
-			" Interesting.", "面白い 。", "white", "Omoshiroi.", 0, null));
-	CurrentWord.allWords.add(new Word("white"	, "shiro"	, "しろ", "白 ", 0,
-			" Interesting.", "面白い 。", "white", "Omoshiroi.", 0, null));
-	
-}
+		CurrentWord.beginningReviewWords.add(new Word("business card",
+				"meishi", "めいし", "名刺", 0, "Here is my business card.",
+				"私の名刺です。", "businesscard", "Watashi no meishidesu.", 0,
+				"one, two, three"));
+		CurrentWord.allWords
+				.add(new Word("business card", "meishi", "めいし", "名刺", 0,
+						"Here is my business card.", "私の名刺です。", "businesscard",
+						"Watashi no meishidesu.", 0, "one, two, three"));
+
+		CurrentWord.beginningReviewWords.add(new Word("one, two, three",
+				"Ichi, ni, san", "いち、に、さん", "一 二 三 ", 0, "From scratch.",
+				"いちから 。", "onetwothree", " Ichi kara. ", 0, ""));
+		CurrentWord.allWords.add(new Word("one, two, three", "Ichi, ni, san",
+				"いち、に、さん", "一 二 三 ", 0, "From scratch.", "いちから 。",
+				"onetwothree", " Ichi kara. ", 0, ""));
+
+		CurrentWord.beginningReviewWords.add(new Word("coffee", "kōhī", "コーヒー",
+				"珈琲", 0, "Coffee grinder.", "コーヒーミル 。", "coffee", "Kōhīmiru.",
+				0,
+				"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
+		CurrentWord.allWords.add(new Word("coffee", "kōhī", "コーヒー", "珈琲", 0,
+				"Coffee grinder.", "コーヒーミル 。", "coffee", "Kōhīmiru.", 0,
+				"Coffee Maker by Antonieta Gomez from the thenounproject.com"));
+
+		CurrentWord.beginningReviewWords.add(new Word("cat", "neko", "ねこ", "猫",
+				0, " Kitten.", "こねこ。", "cat", "Koneko.", 0,
+				"Cat by Ramburu from the thenounproject.com"));
+		CurrentWord.allWords.add(new Word("cat", "neko", "ねこ", "猫", 0,
+				" Kitten.", "こねこ。", "cat", "Koneko.", 0,
+				"Cat by Ramburu from the thenounproject.com"));
+
+		CurrentWord.beginningReviewWords.add(new Word("spider", "kumo", "クモ",
+				"蜘蛛", 0, " Spider web.", "くものす。", "spider", "Kumo no su.", 0,
+				"Spider by Johnbosco Ng from the thenounproject.com"));
+		CurrentWord.allWords.add(new Word("spider", "kumo", "クモ", "蜘蛛", 0,
+				" Spider web.", "くものす。", "spider", "Kumo no su.", 0,
+				"Spider by Johnbosco Ng from the thenounproject.com"));
+
+		CurrentWord.beginningReviewWords.add(new Word("white", "shiro", "しろ",
+				"白 ", 0, " Interesting.", "面白い 。", "white", "Omoshiroi.", 0,
+				null));
+		CurrentWord.allWords.add(new Word("white", "shiro", "しろ", "白 ", 0,
+				" Interesting.", "面白い 。", "white", "Omoshiroi.", 0, null));
+
+	}
+
 	// private void saveDateAndNumberOfWords() {
 	//
 	// //if date is the same as the saved date then keep the same word
@@ -657,39 +663,43 @@ private void addSomeWords(){
 			return null;
 		}
 	}
-	private void showDialog(){
-    	AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+
+	private void showDialog() {
+		AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
 				MainActivity.this);
- 
-			// set title
-			alertDialogBuilder.setTitle("Purchase More Words?");
- 
-			// set dialog message
-			alertDialogBuilder
-				.setMessage("Do you want to purchase all words and phrases rather than recieving 1 per day?")
+
+		// set title
+		alertDialogBuilder.setTitle("Purchase More Words?");
+
+		// set dialog message
+		alertDialogBuilder
+				.setMessage(
+						"Do you want to purchase all words and phrases rather than recieving 1 per day?")
 				.setCancelable(false)
-				.setPositiveButton("Yes",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
+				.setPositiveButton("Yes",
+						new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int id) {
+								dialog.cancel();
+								bp.purchase("com.panafold.allwords");
+								System.out.println("clicked");
+							}
+						})
+				.setNegativeButton("No", new DialogInterface.OnClickListener() {
+					public void onClick(DialogInterface dialog, int id) {
 						dialog.cancel();
-						
-						bp.purchase("com.panafold.allwords");
-						System.out.println("clicked");
 					}
-				  })
-				.setNegativeButton("No",new DialogInterface.OnClickListener() {
-					public void onClick(DialogInterface dialog,int id) {
-						dialog.cancel();
-						}
 				});
- 
-				// create alert dialog
-				AlertDialog alertDialog = alertDialogBuilder.create();
- 
-				// show it
-				alertDialog.show();
-    }
+
+		// create alert dialog
+		AlertDialog alertDialog = alertDialogBuilder.create();
+
+		// show it
+		alertDialog.show();
+	}
+
 	public void goToTutorialPage(View v) {
 		startActivity(new Intent(this, TutorialActivity.class));
+		finish();
 	}
 
 	public void aboutPage(View v) {
@@ -699,52 +709,53 @@ private void addSomeWords(){
 	public void getMoreWords(View v) {
 		showDialog();
 	}
-	@Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (!bp.handleActivityResult(requestCode, resultCode, data))
-            super.onActivityResult(requestCode, resultCode, data);
-    }
-	@Override
-    public void onBillingInitialized() {
-        System.out.println("onBillingInitialized");
-    }
 
-    @Override
-    public void onProductPurchased(String productId) {
-        /*
-         * Called then requested PRODUCT ID was successfully purchased
-         */
-    	System.out.println("onProductPurchased");
-    	
-    	LocalDBHelper dynamicdb = new LocalDBHelper(MainActivity.this);
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (!bp.handleActivityResult(requestCode, resultCode, data))
+			super.onActivityResult(requestCode, resultCode, data);
+	}
+
+	@Override
+	public void onBillingInitialized() {
+		System.out.println("onBillingInitialized");
+	}
+
+	@Override
+	public void onProductPurchased(String productId) {
+		/*
+		 * Called then requested PRODUCT ID was successfully purchased
+		 */
+		System.out.println("onProductPurchased");
+		LocalDBHelper dynamicdb = new LocalDBHelper(MainActivity.this);
 		dynamicdb.getWritableDatabase();
-		
-    	for(Word w : CurrentWord.allWords){
-    		if(CurrentWord.previouslySavedStrings.contains(w.getEnglish())){
-    			//if word is already saved do nothing
-    		}else{
+
+		for (Word w : CurrentWord.allWords) {
+			if (CurrentWord.previouslySavedStrings.contains(w.getEnglish())) {
+				// if word is already saved do nothing
+			} else {
 				dynamicdb.addWord(w);
-    		}
-    		
-    	}
-    	
-    	
-    }
+			}
 
-    @Override
-    public void onBillingError(int errorCode, Throwable error) {
-        /*
-         * Called then some error occured. See Constants class for more details
-         */
-    	System.out.println("onBillingError");
-    }
+		}
+		startActivity(new Intent(MainActivity.this,MainActivity.class));
 
-    @Override
-    public void onPurchaseHistoryRestored() {
-        /*
-         * Called then purchase history was restored and the list of all owned PRODUCT ID's 
-         * was loaded from Google Play
-         */
-    	System.out.println("onPurchaseHistoryRestored");
-    }
+	}
+
+	@Override
+	public void onBillingError(int errorCode, Throwable error) {
+		/*
+		 * Called then some error occured. See Constants class for more details
+		 */
+		System.out.println("onBillingError");
+	}
+
+	@Override
+	public void onPurchaseHistoryRestored() {
+		/*
+		 * Called then purchase history was restored and the list of all owned
+		 * PRODUCT ID's was loaded from Google Play
+		 */
+		System.out.println("onPurchaseHistoryRestored");
+	}
 }

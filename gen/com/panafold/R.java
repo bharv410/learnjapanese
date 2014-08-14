@@ -585,7 +585,7 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int yen=0x7f0200a5;
     }
     public static final class id {
-        public static final int action_settings=0x7f04002e;
+        public static final int action_settings=0x7f040031;
         public static final int beigeBlock=0x7f040010;
         public static final int bigPicImageView=0x7f040017;
         public static final int blankTextView=0x7f040019;
@@ -616,16 +616,19 @@ or to a theme attribute in the form "<code>?[<i>package</i>:][<i>type</i>:]<i>na
         public static final int showcase_button=0x7f040005;
         public static final int showcase_sub_text=0x7f040007;
         public static final int showcase_title_text=0x7f040006;
+        public static final int skip1=0x7f040028;
+        public static final int skip2=0x7f04002b;
+        public static final int skip3=0x7f04002e;
         public static final int slide1=0x7f040026;
-        public static final int slide2=0x7f040028;
-        public static final int slide3=0x7f04002a;
-        public static final int slide4=0x7f04002c;
+        public static final int slide2=0x7f040029;
+        public static final int slide3=0x7f04002c;
+        public static final int slide4=0x7f04002f;
         public static final int top=0x7f040004;
         public static final int triangle=0x7f040001;
         public static final int tutImage=0x7f040027;
-        public static final int tutImage2=0x7f040029;
-        public static final int tutImage3=0x7f04002b;
-        public static final int tutImage4=0x7f04002d;
+        public static final int tutImage2=0x7f04002a;
+        public static final int tutImage3=0x7f04002d;
+        public static final int tutImage4=0x7f040030;
         public static final int underline=0x7f040002;
         public static final int viewpagerfortutorial=0x7f04000e;
         public static final int weatherProgressBar=0x7f040013;

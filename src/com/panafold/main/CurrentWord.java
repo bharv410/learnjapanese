@@ -109,7 +109,7 @@ public class CurrentWord {
 
 		getImage.put("camel", R.drawable.camel);
 
-		getImage.put("\"four, five, six\"", R.drawable.fourfivesix);
+		getImage.put("four, five, six", R.drawable.fourfivesix);
 
 		getImage.put("slowly", R.drawable.slowly);
 
@@ -145,7 +145,7 @@ public class CurrentWord {
 
 		getImage.put("Japanese", R.drawable.japanese);
 
-		getImage.put("\"first, given name\"", R.drawable.internet);
+		getImage.put("first, given name", R.drawable.internet);
 
 		getImage.put("what", R.drawable.what);
 
@@ -202,7 +202,7 @@ public class CurrentWord {
 
 		getImage.put("white", R.drawable.white);
 
-		getImage.put("book.", R.drawable.book);
+		getImage.put("book", R.drawable.book);
 
 		getImage.put("hometown", R.drawable.hometown);
 
@@ -220,13 +220,13 @@ public class CurrentWord {
 
 		getImage.put("thing", R.drawable.thing);
 
-		getImage.put("\"this one, this way\"", R.drawable.thisonethisway);
+		getImage.put("this one, this way", R.drawable.thisonethisway);
 
 		getImage.put("highway", R.drawable.highway);
 
 		getImage.put("English", R.drawable.english);
 
-		getImage.put("\"fine, healthy\"", R.drawable.healthyfine);
+		getImage.put("fine, healthy", R.drawable.healthyfine);
 
 		getImage.put("police", R.drawable.police);
 
@@ -236,7 +236,7 @@ public class CurrentWord {
 
 		getImage.put("socks", R.drawable.socks);
 
-		getImage.put("\"shoes, boots\"", R.drawable.shoesboots);
+		getImage.put("shoes, boots", R.drawable.shoesboots);
 
 		getImage.put("please (a favor)", R.drawable.pleasefavor);
 
@@ -254,7 +254,7 @@ public class CurrentWord {
 
 		getImage.put("student", R.drawable.student);
 
-		getImage.put("\"cool, stylish\"", R.drawable.cool);
+		getImage.put("cool, stylish", R.drawable.cool);
 
 		getImage.put("write", R.drawable.write);
 
@@ -266,7 +266,7 @@ public class CurrentWord {
 
 		getImage.put("tea", R.drawable.tea);
 
-		getImage.put("welcome(home)", R.drawable.welcomehome);
+		getImage.put("welcome (home)", R.drawable.welcomehome);
 
 		getImage.put("yen", R.drawable.yen);
 
@@ -286,7 +286,7 @@ public class CurrentWord {
 
 		getImage.put("one, two, three", R.drawable.onetwothree);
 
-		getImage.put("bon appetit.", R.drawable.bonappetit);
+		getImage.put("bon appetit", R.drawable.bonappetit);
 
 		getImage.put("do", R.drawable.do_);
 
@@ -302,7 +302,7 @@ public class CurrentWord {
 
 		getImage.put("blue", R.drawable.blue);
 
-		getImage.put("\"seven, eight, nine, ten.\"",
+		getImage.put("seven, eight, nine, ten",
 				R.drawable.seveneightnineten);
 
 		getImage.put("hat", R.drawable.hat);

@@ -12,5 +12,12 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
         android:src="@drawable/tutorialp3" android:scaleType="fitXY"/>
-
+<Button
+        android:id="@+id/skip3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:text="Skip" 
+        android:onClick="exitTutorial"/>
 </RelativeLayout>

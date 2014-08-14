@@ -44,11 +44,10 @@ public class TutorialActivity extends FragmentActivity {
     }
 
 public void exitTutorial(View v){
-	if(CurrentWord.theCurrentWord!=null){
-		finish();
-	}else{
+	
 		startActivity(new Intent(TutorialActivity.this,MainActivity.class));
-	}
+		finish();
+	
 	}
     private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
         public ScreenSlidePagerAdapter(FragmentManager fm) {
