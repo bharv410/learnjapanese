@@ -11,9 +11,11 @@
     <string name="title_section3">Section 3</string>
     <string name="title_activity_about_page">AboutPageActivity</string>
     <string name="rate_app_title">Rate This App</string>
-    <string name="rate_app_message">Having fun learning japanese? Please take a moment to rate us in the Play Store</string>
+    
+    
+    <string name="rate_app_message">Are you loving Trickster Tanuki?</string>
     <string name="title_activity_in_app_purchase">InAppPurchaseActivity</string>
-<string name="rta_dialog_ok">Rate now</string>
-    <string name="rta_dialog_cancel">Remind later</string>
-    <string name="rta_dialog_no">No, thanks</string>
+<string name="rta_dialog_ok">Yes, I'll rate it</string>
+    <string name="rta_dialog_cancel">Not right now</string>
+    <string name="rta_dialog_no">No, I'm not </string>
 </resources>

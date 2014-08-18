@@ -138,6 +138,11 @@ public class RateThisApp {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				setOptOut(context, true);
+				Intent intent = new Intent(Intent.ACTION_SEND);
+				intent.setType("text/plain");
+				intent.putExtra(Intent.EXTRA_EMAIL, "hipnisse@panafold.com");
+				intent.putExtra(Intent.EXTRA_SUBJECT, "Trickster Tanuki Feedback");
+				context.startActivity(Intent.createChooser(intent, "Send Email"));
 			}
 		});
 		builder.setOnCancelListener(new OnCancelListener() {
