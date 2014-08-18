@@ -46,7 +46,7 @@ import com.panafold.R;
 import com.panafold.RateThisApp;
 import com.panafold.TutorialActivity;
 import com.panafold.adapter.TabsPagerAdapter;
-import com.panafold.helpers.MyReciever;
+import com.panafold.helpers.AlarmReciever;
 import com.panafold.main.datamodel.LocalDBHelper;
 import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.SqlLiteDbHelper;
@@ -71,6 +71,7 @@ public class MainActivity extends FragmentActivity implements
 	private Boolean currentWordIsSet, supportsTextToSpeech;
 	BillingProcessor bp;
 	PendingIntent pendingIntent;
+	AlarmManager alarmManager;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -117,7 +118,6 @@ public class MainActivity extends FragmentActivity implements
 
 		// setup text to speech engine
 		tts = new TextToSpeech(this, this);
-
 		setupFonts();
 		setupDatabases();
 		//setupNotifications();
@@ -129,8 +129,19 @@ public class MainActivity extends FragmentActivity implements
 		mBestLocationProvider
 				.startLocationUpdatesWithListener(mBestLocationListener);
 
+		setAlarm();
 	}
-
+	public void setAlarm(){
+		alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
+		Intent alarmIntent = new Intent(MainActivity.this, AlarmReciever.class);
+		pendingIntent = PendingIntent.getBroadcast(  MainActivity.this, 0, alarmIntent, 0);
+Calendar alarmStartTime = Calendar.getInstance();
+		alarmStartTime.set(Calendar.HOUR_OF_DAY, 9);
+		alarmStartTime.set(Calendar.MINUTE, 00);
+		alarmStartTime.set(Calendar.SECOND, 0);
+		alarmStartTime.add(Calendar.DAY_OF_YEAR, 1);
+		alarmManager.setRepeating(AlarmManager.RTC, alarmStartTime.getTimeInMillis(), getInterval(), pendingIntent);
+	}
 	private void setupFonts() {
 		// add custom fonts
 		gothamFont = Typeface.createFromAsset(getAssets(),
@@ -140,6 +151,15 @@ public class MainActivity extends FragmentActivity implements
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
 	}
+	private int getInterval(){
+		 int days = 1;
+		 int hours = 24;
+		 int minutes = 60;
+		 int seconds = 60;
+		 int milliseconds = 1000;
+		 int repeatMS = days * hours * minutes * seconds * milliseconds;
+		 return repeatMS;
+	}
 	@Override
 	protected void onStart() {
 	    super.onStart();
@@ -148,6 +168,7 @@ public class MainActivity extends FragmentActivity implements
 	    // If the criteria is satisfied, "Rate this app" dialog will be shown
 	    RateThisApp.showRateDialogIfNeeded(this);
 	}
+	
 	@Override
 	protected void onPause() {
 		initLocation();

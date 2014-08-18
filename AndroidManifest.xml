@@ -54,6 +54,8 @@
             android:label="@string/title_activity_in_app_purchase"
             android:theme="@android:style/Theme.Holo.Light.NoActionBar.Fullscreen" >
         </activity>
+        <service android:name=".helpers.AlarmService"></service>
+        <receiver android:name=".helpers.AlarmReciever"></receiver>
     </application>
 
 </manifest>
