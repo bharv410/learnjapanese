@@ -32,7 +32,7 @@
     android:layout_alignParentLeft="true"
     android:layout_alignParentRight="true"
     android:layout_alignParentTop="true"
-    android:src="@drawable/aboutpage"
+    android:src="@drawable/about"
     android:scaleType="fitXY" />
 
 </RelativeLayout>

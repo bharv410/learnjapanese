@@ -88,7 +88,7 @@
             android:layout_centerHorizontal="true"
             android:text="Image Credit"
             android:textColor="#F8EFCB"
-            android:textSize="4sp" />
+            android:textSize="10sp" />
 
     </RelativeLayout>
 

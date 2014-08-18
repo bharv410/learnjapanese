@@ -18,6 +18,7 @@
        android:layout_width="wrap_content"
        android:layout_height="26dip"
        android:textSize="24dp"
+       android:textColor="#F8EFCB"
        android:layout_alignBottom="@+id/list_image"
        android:layout_alignParentRight="true"
        android:layout_alignTop="@+id/list_image"

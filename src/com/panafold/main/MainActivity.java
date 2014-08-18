@@ -16,7 +16,9 @@ import java.util.Random;
 import zh.wang.android.apis.yweathergetter4a.WeatherInfo;
 import zh.wang.android.apis.yweathergetter4a.YahooWeather;
 import zh.wang.android.apis.yweathergetter4a.YahooWeatherInfoListener;
+import android.app.AlarmManager;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -41,8 +43,10 @@ import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 import com.anjlab.android.iab.v3.BillingProcessor;
 import com.panafold.AboutPageActivity;
 import com.panafold.R;
+import com.panafold.RateThisApp;
 import com.panafold.TutorialActivity;
 import com.panafold.adapter.TabsPagerAdapter;
+import com.panafold.helpers.MyReciever;
 import com.panafold.main.datamodel.LocalDBHelper;
 import com.panafold.main.datamodel.ReviewWord;
 import com.panafold.main.datamodel.SqlLiteDbHelper;
@@ -66,13 +70,13 @@ public class MainActivity extends FragmentActivity implements
 	private ProgressBar weatherPB;
 	private Boolean currentWordIsSet, supportsTextToSpeech;
 	BillingProcessor bp;
-
+	PendingIntent pendingIntent;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
-		supportsTextToSpeech = false;
+		supportsTextToSpeech = true;
 
 		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
 		bp = new BillingProcessor(this, base64EncodedPublicKey, this);
@@ -116,7 +120,7 @@ public class MainActivity extends FragmentActivity implements
 
 		setupFonts();
 		setupDatabases();
-
+		//setupNotifications();
 		setWordsThatShouldBeReviewed();
 		addSomeWords();
 		showCorrectWord();
@@ -136,7 +140,14 @@ public class MainActivity extends FragmentActivity implements
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
 	}
-
+	@Override
+	protected void onStart() {
+	    super.onStart();
+	    // Monitor launch times and interval from installation
+	    RateThisApp.onStart(this);
+	    // If the criteria is satisfied, "Rate this app" dialog will be shown
+	    RateThisApp.showRateDialogIfNeeded(this);
+	}
 	@Override
 	protected void onPause() {
 		initLocation();
@@ -204,6 +215,13 @@ public class MainActivity extends FragmentActivity implements
 		}
 	}
 
+//	private void setupNotifications(){
+//		Intent myIntent = new Intent(MainActivity.this, MyReciever.class);
+//	      pendingIntent = PendingIntent.getBroadcast(MainActivity.this, 0, myIntent,0);
+//	      AlarmManager alarmManager = (AlarmManager)getSystemService(ALARM_SERVICE);
+//	      alarmManager.setRepeating(AlarmManager.RTC, System.currentTimeMillis(), 3000, pendingIntent);
+//	}
+	
 	private void setWordsThatShouldBeReviewed() {
 		CurrentWord.shouldBeBold = new ArrayList<String>();
 
