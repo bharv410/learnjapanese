@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Locale;
 import java.util.Random;
 
@@ -28,10 +29,12 @@ import android.location.Location;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -41,10 +44,14 @@ import at.theengine.android.bestlocation.BestLocationProvider;
 import at.theengine.android.bestlocation.BestLocationProvider.LocationType;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.panafold.AboutPageActivity;
+import com.panafold.MyApplication;
 import com.panafold.R;
 import com.panafold.RateThisApp;
 import com.panafold.TutorialActivity;
+import com.panafold.MyApplication.TrackerName;
 import com.panafold.adapter.TabsPagerAdapter;
 import com.panafold.helpers.AlarmReciever;
 import com.panafold.main.datamodel.LocalDBHelper;
@@ -108,6 +115,23 @@ public class MainActivity extends FragmentActivity implements
 							.parseColor("#555F5F"));
 				}
 				titleIndicator.setCurrentItem(i);
+				HashMap<Integer,String> getClassName = new HashMap<Integer,String>();
+				getClassName.put(0, "com.panafold.main.ChangeWordFragment");
+				getClassName.put(1, "com.panafold.main.CurrentWordFragment");
+				getClassName.put(2, "com.panafold.main.PhraseFragment");
+				getClassName.put(3, "com.panafold.main.WebsiteFragment");
+				getClassName.put(4, "com.panafold.main.ChangeWordFragment");
+				
+				// Get tracker.
+		        Tracker t = ((MyApplication) getApplication()).getTracker(
+		            TrackerName.GLOBAL_TRACKER);
+		        // Set screen name.
+		        // Where path is a String representing the screen name.
+		        t.setScreenName(getClassName.get(i));
+
+		        // Send a screen view.
+		        t.send(new HitBuilders.AppViewBuilder().build());
+		        
 			}
 
 			@Override
@@ -125,12 +149,15 @@ public class MainActivity extends FragmentActivity implements
 		addSomeWords();
 		showCorrectWord();
 		initLocation();
+		
+		promptForPurchase();
 		// get location for waether info
 		mBestLocationProvider
 				.startLocationUpdatesWithListener(mBestLocationListener);
 
 		setAlarm();
 	}
+	
 	public void setAlarm(){
 		alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		Intent alarmIntent = new Intent(MainActivity.this, AlarmReciever.class);
@@ -151,6 +178,13 @@ Calendar alarmStartTime = Calendar.getInstance();
 		japaneseFont = Typeface.createFromAsset(getAssets(),
 				"fonts/AozoraMinchoMedium.ttf");
 	}
+	
+	private void promptForPurchase(){
+		//if 3 words are saved than tell them to purchase
+		if(CurrentWord.previouslySavedStrings.size()==4){
+showDialog();
+		}
+	}
 	private int getInterval(){
 		 int days = 1;
 		 int hours = 24;
@@ -167,6 +201,16 @@ Calendar alarmStartTime = Calendar.getInstance();
 	    RateThisApp.onStart(this);
 	    // If the criteria is satisfied, "Rate this app" dialog will be shown
 	    RateThisApp.showRateDialogIfNeeded(this);
+	    
+	 // Get tracker.
+        Tracker t = ((MyApplication) getApplication()).getTracker(
+            TrackerName.GLOBAL_TRACKER);
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName("com.panafold.main.MainActivity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
 	@Override
@@ -190,7 +234,14 @@ Calendar alarmStartTime = Calendar.getInstance();
 
 	@Override
 	public void onInit(int status) {
-
+		Button soundIcon = (Button) findViewById(R.id.soundButton);
+		Button soundIcon2 = (Button) findViewById(R.id.soundButtonPhrase);
+		try{
+		soundIcon.setVisibility(View.VISIBLE);
+		soundIcon2.setVisibility(View.VISIBLE);
+		}catch(NullPointerException n){
+			
+		}
 		if (status == TextToSpeech.SUCCESS) {
 
 			int result = tts.setLanguage(Locale.JAPANESE);
@@ -202,7 +253,6 @@ Calendar alarmStartTime = Calendar.getInstance();
 
 			} else {
 				supportsTextToSpeech = true;
-				// speakOut();
 			}
 
 		} else {

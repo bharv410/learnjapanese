@@ -15,7 +15,7 @@
     
     <string name="rate_app_message">Are you loving Trickster Tanuki?</string>
     <string name="title_activity_in_app_purchase">InAppPurchaseActivity</string>
-<string name="rta_dialog_ok">Yes, I'll rate it</string>
+<string name="rta_dialog_ok">Yes, I\'ll rate it</string>
     <string name="rta_dialog_cancel">Not right now</string>
-    <string name="rta_dialog_no">No, I'm not </string>
+    <string name="rta_dialog_no">No, I\'m not </string>
 </resources>

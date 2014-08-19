@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.view.View;
 
 import com.anjlab.android.iab.v3.BillingProcessor;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.panafold.MyApplication.TrackerName;
 import com.panafold.main.MainActivity;
 
 public class InAppPurchaseActivity extends Activity implements BillingProcessor.IBillingHandler{
@@ -20,6 +23,22 @@ public class InAppPurchaseActivity extends Activity implements BillingProcessor.
 		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
 		bp = new BillingProcessor(this, base64EncodedPublicKey, this);
 		showDialog();
+	}
+	@Override
+	public void onStart(){
+	    super.onStart();
+	    
+
+	 // Get tracker.
+        Tracker t = ((MyApplication) getApplication()).getTracker(
+            TrackerName.GLOBAL_TRACKER);
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName("com.panafold.InAppPurchaseActivity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
 	public void buyClick(View v){

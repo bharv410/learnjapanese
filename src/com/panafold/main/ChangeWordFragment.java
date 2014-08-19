@@ -108,7 +108,7 @@ public class ChangeWordFragment extends ListFragment {
 						position, text, text, text, text, position, text));
 			}
 		}
-
+		
 		// CurrentWord.currentEnglishWord=text;
 		Intent i = new Intent(getActivity(), MainActivity.class);
 		startActivity(i);

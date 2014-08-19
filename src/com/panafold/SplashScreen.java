@@ -1,5 +1,8 @@
 package com.panafold;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.panafold.MyApplication.TrackerName;
 import com.panafold.main.MainActivity;
 
 import android.app.Activity;
@@ -36,6 +39,24 @@ public class SplashScreen extends Activity {
                 finish();
             }
         }, 300);
+	}
+	
+	
+	@Override
+	public void onStart(){
+	    super.onStart();
+	    
+
+	 // Get tracker.
+        Tracker t = ((MyApplication) getApplication()).getTracker(
+            TrackerName.GLOBAL_TRACKER);
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName("com.panafold.SplashScreen");
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
 	}
 	
 	

@@ -52,25 +52,6 @@
             android:textSize="40dp" />
 
         <TextView
-            android:id="@+id/dateTextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="20dp"
-            android:text="Date"
-            android:textColor="#F8EFCB"
-            android:textSize="36sp" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="120dp"
-            android:layout_height="60dp"
-            android:layout_alignBottom="@+id/dateTextView"
-            android:layout_alignParentRight="true"
-            android:src="@drawable/cloudy" />
-
-        <TextView
             android:id="@+id/weatherTextView"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -89,6 +70,25 @@
             android:text="Image Credit"
             android:textColor="#F8EFCB"
             android:textSize="10sp" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="120dp"
+            android:layout_height="60dp"
+            android:layout_alignParentRight="true"
+            android:layout_alignTop="@+id/dateTextView"
+            android:src="@drawable/cloudy" />
+
+        <TextView
+            android:id="@+id/dateTextView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="20dp"
+            android:text="Date"
+            android:textColor="#F8EFCB"
+            android:textSize="36sp" />
 
     </RelativeLayout>
 
@@ -135,12 +135,13 @@
         android:visibility="invisible" />
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/soundButton"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_above="@+id/beigeBlock"
         android:layout_centerHorizontal="true"
         android:background="@drawable/soundicon"
-        android:onClick="speakOut" />
+        android:onClick="speakOut"
+        android:visibility="invisible" />
 
 </RelativeLayout>

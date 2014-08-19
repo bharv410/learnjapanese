@@ -12,7 +12,7 @@ import com.panafold.R;
 
 public class WebsiteFragment extends Fragment {
 	private String currentURL;
-	
+	WebView wv;
 	    @Override
 	    public void onActivityCreated(Bundle savedInstanceState) {       
 	        super.onActivityCreated(savedInstanceState);
@@ -22,9 +22,9 @@ public class WebsiteFragment extends Fragment {
 	   public View onCreateView(LayoutInflater inflater, ViewGroup container,
 	            Bundle savedInstanceState) {
 	        View rootView = inflater.inflate(R.layout.fragment_movies, container, false);
-	        currentURL="https://www.youtube.com/results?search_query="+CurrentWord.theCurrentWord.getRomaji();
+	        currentURL="https://www.youtube.com/results?search_query="+CurrentWord.theCurrentWord.getHirigana();
 	        if (currentURL != null) {
-	            WebView wv = (WebView) rootView.findViewById(R.id.webView1);
+	            wv = (WebView) rootView.findViewById(R.id.webView1);
 	            wv.getSettings().setJavaScriptEnabled(true);
 	            wv.setWebViewClient(new SwAWebClient());
 	            wv.loadUrl(currentURL);
@@ -35,7 +35,14 @@ public class WebsiteFragment extends Fragment {
 	        @Override
 	        public boolean shouldOverrideUrlLoading(WebView view, String url) {
 	            return false;
-	
 	        }
+	    }
+	    
+	    @Override
+	    public void onPause(){
+	    	super.onPause();
+	    	wv.loadUrl("http://www.google.com");
+	    	wv.destroy();
+	    	getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
 	    }
 	}

@@ -1,5 +1,8 @@
 package com.panafold;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.panafold.MyApplication.TrackerName;
 import com.panafold.main.CurrentWord;
 import com.panafold.main.MainActivity;
 
@@ -30,7 +33,22 @@ public class TutorialActivity extends FragmentActivity {
         mPager.setAdapter(mPagerAdapter);
 
     }
+    @Override
+	public void onStart(){
+	    super.onStart();
+	    
 
+	 // Get tracker.
+        Tracker t = ((MyApplication) getApplication()).getTracker(
+            TrackerName.GLOBAL_TRACKER);
+
+        // Set screen name.
+        // Where path is a String representing the screen name.
+        t.setScreenName("com.panafold.TutorialActivity");
+
+        // Send a screen view.
+        t.send(new HitBuilders.AppViewBuilder().build());
+	}
     @Override
     public void onBackPressed() {
         if (mPager.getCurrentItem() == 0) {

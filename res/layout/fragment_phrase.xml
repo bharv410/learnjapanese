@@ -5,13 +5,14 @@
     android:background="#555F5F" >
 
     <Button
-        android:id="@+id/button1"
+        android:id="@+id/soundButtonPhrase"
         android:layout_width="25dp"
         android:layout_height="25dp"
         android:layout_below="@+id/japanesePhrase"
         android:layout_centerHorizontal="true"
         android:background="@drawable/soundicon"
-        android:onClick="speakOutPhrase" />
+        android:onClick="speakOutPhrase" 
+        android:visibility="invisible"/>
 
     <TextView
         android:id="@+id/japanesePhrase"
