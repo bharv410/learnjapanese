@@ -144,4 +144,14 @@
         android:onClick="speakOut"
         android:visibility="invisible" />
 
+    <TextView
+        android:id="@+id/textView100"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/soundButton"
+        android:layout_centerHorizontal="true"
+        android:text="TAP TO VIEW JAPANESE"
+        android:textColor="#F8EFCB"
+        android:textSize="10sp" />
+
 </RelativeLayout>

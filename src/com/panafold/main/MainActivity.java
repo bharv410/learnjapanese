@@ -29,8 +29,8 @@ import android.location.Location;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewPager;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.Window;
@@ -48,10 +48,10 @@ import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 import com.panafold.AboutPageActivity;
 import com.panafold.MyApplication;
+import com.panafold.MyApplication.TrackerName;
 import com.panafold.R;
 import com.panafold.RateThisApp;
 import com.panafold.TutorialActivity;
-import com.panafold.MyApplication.TrackerName;
 import com.panafold.adapter.TabsPagerAdapter;
 import com.panafold.helpers.AlarmReciever;
 import com.panafold.main.datamodel.LocalDBHelper;
@@ -79,13 +79,15 @@ public class MainActivity extends FragmentActivity implements
 	BillingProcessor bp;
 	PendingIntent pendingIntent;
 	AlarmManager alarmManager;
+	
+	public static Boolean isTablet;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		this.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		supportsTextToSpeech = true;
-
+checkIfTablet();
 		String base64EncodedPublicKey = "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqiLU0GwvBQu7VQTN821qMfmjaec2DKksSfXU8klufTp8H0nPoVnufdb87W5PVIttNWfOQK+3SO+ZTfPNCPYZWf5RBDR9U6Km/jMPxhQ526NdYf9Q4PyBBJDlo96ycDxBdjgi7yoCSfdVsCKgBuThAjsdcUmHrdRMAQIBN9b8IGFH2lhtgQHHbvHXz9k4Vyx/xjMw3YJHaOmh9RtZTKB944u9i1AFVa+YCisvVabeIafV+vcG2D2LdyucWcuG+3LROn8EZhyC3ByJNuexebTKg/7KqWD826bh6o5Wg0AnOa2AdnsyXl18S19oZ44QkKfM7IOpSlB+W4JqXbc7gDaxkwIDAQAB";
 		bp = new BillingProcessor(this, base64EncodedPublicKey, this);
 
@@ -157,15 +159,26 @@ public class MainActivity extends FragmentActivity implements
 
 		setAlarm();
 	}
-	
+	private void checkIfTablet(){
+		DisplayMetrics metrics = new DisplayMetrics();
+  		getWindowManager().getDefaultDisplay().getMetrics(metrics);
+  		int width = metrics.widthPixels;
+  		int height = metrics.heightPixels;
+
+  		if (width > 1023 || height > 1023){
+  			isTablet=true;
+  		}else{
+  			isTablet=false;
+  			}
+	}
 	public void setAlarm(){
 		alarmManager = (AlarmManager) getSystemService(ALARM_SERVICE);
 		Intent alarmIntent = new Intent(MainActivity.this, AlarmReciever.class);
 		pendingIntent = PendingIntent.getBroadcast(  MainActivity.this, 0, alarmIntent, 0);
 Calendar alarmStartTime = Calendar.getInstance();
-		alarmStartTime.set(Calendar.HOUR_OF_DAY, 9);
-		alarmStartTime.set(Calendar.MINUTE, 00);
-		alarmStartTime.set(Calendar.SECOND, 0);
+//		alarmStartTime.set(Calendar.HOUR_OF_DAY, 9);
+//		alarmStartTime.set(Calendar.MINUTE, 00);
+//		alarmStartTime.set(Calendar.SECOND, 0);
 		alarmStartTime.add(Calendar.DAY_OF_YEAR, 1);
 		alarmManager.setRepeating(AlarmManager.RTC, alarmStartTime.getTimeInMillis(), getInterval(), pendingIntent);
 	}
@@ -181,8 +194,8 @@ Calendar alarmStartTime = Calendar.getInstance();
 	
 	private void promptForPurchase(){
 		//if 3 words are saved than tell them to purchase
-		if(CurrentWord.previouslySavedStrings.size()==4){
-showDialog();
+		if(CurrentWord.previouslySavedStrings.size()==4 || CurrentWord.previouslySavedStrings.size()==12 || CurrentWord.previouslySavedStrings.size()==20){
+			showDialog();
 		}
 	}
 	private int getInterval(){
@@ -197,8 +210,6 @@ showDialog();
 	@Override
 	protected void onStart() {
 	    super.onStart();
-	    // Monitor launch times and interval from installation
-	    RateThisApp.onStart(this);
 	    // If the criteria is satisfied, "Rate this app" dialog will be shown
 	    RateThisApp.showRateDialogIfNeeded(this);
 	    

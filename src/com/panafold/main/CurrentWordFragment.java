@@ -1,4 +1,4 @@
-package com.panafold.main;
+	package com.panafold.main;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -7,6 +7,7 @@ import java.util.Locale;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.panafold.R;
@@ -25,65 +27,6 @@ public class CurrentWordFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.fragment_imageandword, container, false);
-		
-		
-//		
-//		new Handler().postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//            	//setup overlay
-//        		sv = new ShowcaseView.Builder(getActivity())
-//                .setTarget(new ViewTarget(getActivity().findViewById(R.id.japaneseTextView)))
-//                .setContentTitle("Japanese Translations")
-//    .setContentText("Click to toggle between Japanese translations. The top switches between the english pronunciation(Romaji) " +
-//    		"and the Japanese spelling(Hirigana). The bottom is always the official Japanese symbol(Kanji)")
-//    .hideOnTouchOutside()
-//                .build();
-//        		sv.setOnShowcaseEventListener(new OnShowcaseEventListener() {
-//       			 @Override
-//       			    public void onShowcaseViewHide(ShowcaseView showcaseView) {
-//       				 sv = new ShowcaseView.Builder(getActivity())
-//       	                .setTarget(new ViewTarget(getActivity().findViewById(R.id.button1)))
-//       	                .setContentTitle("Click to play words")
-//       	    .setContentText("Click to hear the japenese sound of the word")
-//       	                .build();
-//       				sv.setOnShowcaseEventListener(new OnShowcaseEventListener() {
-//           			 @Override
-//           			    public void onShowcaseViewHide(ShowcaseView showcaseView) {
-//           				 sv = new ShowcaseView.Builder(getActivity())
-//           	                .setTarget(new ViewTarget(getActivity().findViewById(R.id.englishTextView)))
-//           	                .setContentTitle("How to use:")
-//           	    .setContentText("Each day you'll get a new word.After a while you'll be reminded to review learned words" +
-//           	    		"by being added to the review section to the left. Check for phrases to the right and related videos")
-//           	    		.hideOnTouchOutside()
-//           	                .build();
-//           			    }
-//           			 @Override
-//           			    public void onShowcaseViewShow(ShowcaseView showcaseView) {
-//           			        //The view is shown
-//           			    }
-//   					@Override
-//   					public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-//   						// TODO Auto-generated method stub
-//   						
-//   					}
-//           			});
-//       			    }
-//
-//       			 @Override
-//       			    public void onShowcaseViewShow(ShowcaseView showcaseView) {
-//       			        //The view is shown
-//       			    }
-//
-//					@Override
-//					public void onShowcaseViewDidHide(ShowcaseView showcaseView) {
-//						// TODO Auto-generated method stub
-//						
-//					}
-//       			});
-//        		
-//            }
-//        }, 100);
 		return rootView;
 	}
 	
@@ -93,6 +36,21 @@ public class CurrentWordFragment extends Fragment {
         
       //set big pic image to the corresponding resource in the static hashmap
       		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
+      		
+      		if(MainActivity.isTablet){
+      			
+      			
+      			android.view.ViewGroup.LayoutParams layoutParams = bigPic.getLayoutParams();
+      			Toast.makeText(getActivity(), "Original Height: "+layoutParams.height + "Width: "+layoutParams.width, Toast.LENGTH_SHORT).show();
+      			layoutParams.width = 550;
+      			layoutParams.height = 471;
+      			bigPic.setLayoutParams(layoutParams);
+      			bigPic.requestLayout();
+      			layoutParams = bigPic.getLayoutParams();
+      			Toast.makeText(getActivity(), "Original Height: "+layoutParams.height + "Width: "+layoutParams.width, Toast.LENGTH_SHORT).show();
+      			
+      		}
+      		
       		System.out.println(CurrentWord.theCurrentWord.getEnglish());
       		bigPic.setImageDrawable(getResources().getDrawable(CurrentWord.getImage.get(CurrentWord.theCurrentWord.getEnglish())));
       		

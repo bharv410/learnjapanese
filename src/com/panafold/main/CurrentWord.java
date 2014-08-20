@@ -145,7 +145,7 @@ public class CurrentWord {
 
 		getImage.put("Japanese", R.drawable.japanese);
 
-		getImage.put("first, given name", R.drawable.internet);
+		getImage.put("first, given name", R.drawable.name);
 
 		getImage.put("what", R.drawable.what);
 

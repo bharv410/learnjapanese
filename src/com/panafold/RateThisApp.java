@@ -17,6 +17,10 @@ package com.panafold;
 
 import java.util.Date;
 
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+import com.panafold.MyApplication.TrackerName;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -46,11 +50,15 @@ public class RateThisApp {
 	private static Date mInstallDate = new Date();
 	private static int mLaunchTimes = 0;
 	private static boolean mOptOut = false;
-	
+	// Get tracker.
+    Tracker t;
 	/**
 	 * Days after installation until showing rate dialog
 	 */
-	public static final int INSTALL_DAYS = 4;
+	/**
+	 * App launching times until showing rate dialog
+	 */
+	public static final int LAUNCH_TIMES = 9;
 	
 	/**
 	 * If true, print LogCat
@@ -103,10 +111,10 @@ public class RateThisApp {
 		if (mOptOut) {
 			return false;
 		} else {
-			long threshold = INSTALL_DAYS * 24 * 60 * 60 * 1000L;	// msec
-			if (new Date().getTime() - mInstallDate.getTime() >= threshold) {
+			if (mLaunchTimes >= LAUNCH_TIMES) {
 				return true;
 			}
+			
 			return false;
 		}
 	}
@@ -138,11 +146,6 @@ public class RateThisApp {
 			@Override
 			public void onClick(DialogInterface dialog, int which) {
 				setOptOut(context, true);
-				Intent intent = new Intent(Intent.ACTION_SEND);
-				intent.setType("text/plain");
-				intent.putExtra(Intent.EXTRA_EMAIL, "hipnisse@panafold.com");
-				intent.putExtra(Intent.EXTRA_SUBJECT, "Trickster Tanuki Feedback");
-				context.startActivity(Intent.createChooser(intent, "Send Email"));
 			}
 		});
 		builder.setOnCancelListener(new OnCancelListener() {
