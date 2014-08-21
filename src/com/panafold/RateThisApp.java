@@ -111,7 +111,7 @@ public class RateThisApp {
 		if (mOptOut) {
 			return false;
 		} else {
-			if (mLaunchTimes >= LAUNCH_TIMES) {
+			if (mLaunchTimes == LAUNCH_TIMES || mLaunchTimes ==(LAUNCH_TIMES*3)) {
 				return true;
 			}
 			

@@ -7,7 +7,6 @@ import java.util.Locale;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +14,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.panafold.R;
@@ -38,17 +36,12 @@ public class CurrentWordFragment extends Fragment {
       		ImageView bigPic=(ImageView)getActivity().findViewById(R.id.bigPicImageView);
       		
       		if(MainActivity.isTablet){
-      			
-      			
       			android.view.ViewGroup.LayoutParams layoutParams = bigPic.getLayoutParams();
-      			Toast.makeText(getActivity(), "Original Height: "+layoutParams.height + "Width: "+layoutParams.width, Toast.LENGTH_SHORT).show();
       			layoutParams.width = 550;
       			layoutParams.height = 471;
       			bigPic.setLayoutParams(layoutParams);
       			bigPic.requestLayout();
-      			layoutParams = bigPic.getLayoutParams();
-      			Toast.makeText(getActivity(), "Original Height: "+layoutParams.height + "Width: "+layoutParams.width, Toast.LENGTH_SHORT).show();
-      			
+      			layoutParams = bigPic.getLayoutParams();      			
       		}
       		
       		System.out.println(CurrentWord.theCurrentWord.getEnglish());

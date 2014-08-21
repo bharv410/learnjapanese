@@ -336,7 +336,7 @@ Calendar alarmStartTime = Calendar.getInstance();
 		// if they bought all the words then show a random one
 		int savedWordsSize = CurrentWord.previouslySavedWords.size();
 		int allWordsSize = CurrentWord.allWords.size();
-		if (savedWordsSize >= allWordsSize) {
+		if (savedWordsSize >= allWordsSize && CurrentWord.theCurrentWord==null) {
 			Random r = new Random();
 			CurrentWord.theCurrentWord = CurrentWord.allWords.get(r
 					.nextInt(allWordsSize - 1));
